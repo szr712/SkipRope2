@@ -12,24 +12,23 @@ import os
 from tensorflow.python.keras.optimizer_v2.adam import Adam
 from tensorflow.python.keras.optimizer_v2.rmsprop import RMSprop
 
-from dataReader import load_dataset, load_dataset2
+from dataReader import load_dataset
 
-modelName = "手臂得分_"
+modelName = "左右得分_"
 
 # os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
-epochs, batch_size = 100, 32
+epochs, batch_size = 300, 32
 dataSet = "./data"
-className = "shoubi"
+className = "zuoyou"
 logDir = "./logs"
 curTime = datetime.now().strftime("_%Y%m%d_%H_%M_%S")
 modelPath = "./model"
-augment = True
 
 
 def create_model():
     """
 
-    创建 模型
+    创建 手臂 手腕 模型
 
     :return: 模型
     """
@@ -48,25 +47,47 @@ def create_model():
     model.summary()
     return model
 
+def create_model2():
+    """
+
+    创建 左右 模型
+
+    :return: 模型
+    """
+    model = Sequential()
+    model.add(LSTM(64, input_shape=(30, 9), return_sequences=True, kernel_regularizer=tf.keras.regularizers.l2(0.0001)))
+    model.add(LSTM(64, kernel_regularizer=tf.keras.regularizers.l2(0.0001)))
+    model.add(Dropout(0.2))
+    model.add(Dense(2, activation="softmax"))
+
+    learning_rate = tf.keras.optimizers.schedules.ExponentialDecay(
+        0.0003,
+        decay_steps=3000,
+        decay_rate=0.8)
+
+    model.compile(loss='categorical_crossentropy', optimizer=Adam(learning_rate), metrics=['acc'])
+    model.summary()
+    return model
+
 
 def get_callbacks():
     return [
-        callbacks.EarlyStopping(monitor='val_mse', patience=10, restore_best_weights=True),  # 就是需要对验证集的loss监听
+        callbacks.EarlyStopping(monitor='val_loss', patience=20, restore_best_weights=True),  # 就是需要对验证集的loss监听
         callbacks.TensorBoard(log_dir=os.path.join(logDir, className, modelName + curTime)),
     ]
 
 
 def train_model(model, trainX, trainy, testX, testy):
     history = model.fit(trainX, trainy, epochs=epochs, batch_size=batch_size, validation_split=0.3,
-                        callbacks=get_callbacks())
+                        callbacks=get_callbacks(), shuffle=True)
     result = model.evaluate(testX, testy, batch_size=batch_size)
     return history, result
 
 
 if __name__ == '__main__':
-    X_train, X_test, y_train, y_test = load_dataset2(dataSet, className, augment=augment)
+    X_train, X_test, y_train, y_test = load_dataset(dataSet, className,scores=[0,1])
 
-    model = create_model()
+    model = create_model2()
 
     history, result = train_model(model, X_train, y_train, X_test, y_test)
 
