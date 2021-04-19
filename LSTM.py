@@ -6,20 +6,21 @@ from tensorflow.keras.layers import Dense, Dropout
 from tensorflow.keras.layers import LSTM
 import matplotlib.pyplot as plt
 import pandas as pd
+import numpy as np
 import tensorflow as tf
 import os
 
 from tensorflow.python.keras.optimizer_v2.adam import Adam
 from tensorflow.python.keras.optimizer_v2.rmsprop import RMSprop
 
-from dataReader import load_dataset
+from dataReader import load_dataset, load_dataset2
 
-modelName = "左右得分_"
+modelName = "手臂得分_class_weight_"
 
 # os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 epochs, batch_size = 300, 32
 dataSet = "./data"
-className = "zuoyou"
+className = "shoubi"
 logDir = "./logs"
 curTime = datetime.now().strftime("_%Y%m%d_%H_%M_%S")
 modelPath = "./model"
@@ -46,6 +47,7 @@ def create_model():
     model.compile(loss='categorical_crossentropy', optimizer=Adam(learning_rate), metrics=['acc'])
     model.summary()
     return model
+
 
 def create_model2():
     """
@@ -77,21 +79,28 @@ def get_callbacks():
     ]
 
 
-def train_model(model, trainX, trainy, testX, testy):
-    history = model.fit(trainX, trainy, epochs=epochs, batch_size=batch_size, validation_split=0.3,
-                        callbacks=get_callbacks(), shuffle=True)
+def train_model(model, trainX, trainy, testX, testy, class_weights):
+    history = model.fit(trainX, trainy, epochs=epochs, batch_size=batch_size, validation_data=(testX, testy),
+                        class_weight=class_weights, callbacks=get_callbacks(), shuffle=True)
+
+    # history = model.fit(trainX, trainy, epochs=epochs, batch_size=batch_size, validation_split=0.3,
+    #                     class_weight=class_weight,
+    #                     callbacks=get_callbacks(), shuffle=True)
     result = model.evaluate(testX, testy, batch_size=batch_size)
     return history, result
 
 
 if __name__ == '__main__':
-    X_train, X_test, y_train, y_test = load_dataset(dataSet, className,scores=[0,1])
+    X_train, X_test, y_train, y_test, class_weights = load_dataset2(dataSet, className)
 
-    model = create_model2()
+    if className == "zuoyou":
+        model = create_model2()
+    else:
+        model = create_model()
 
-    history, result = train_model(model, X_train, y_train, X_test, y_test)
+    history, result = train_model(model, X_train, y_train, X_test, y_test, class_weights)
 
-    saveName = modelName + str(round(result[0], 3)) + "_" + curTime + ".h5"
+    saveName = modelName + str(round(result[1], 3)) + "_" + curTime + ".h5"
     model.save(os.path.join(modelPath, className, saveName))
 
     # plot_history(history)
