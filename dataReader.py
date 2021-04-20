@@ -1,4 +1,5 @@
 import pickle
+import random
 
 import pandas as pd
 import os
@@ -46,7 +47,7 @@ def to_circleList(data):
             circle = data[pre:i, 0:9].copy()
             pre = i
             circleList.append(circle)
-            print(circle.shape)
+            # print(circle.shape)
     return circleList
 
 
@@ -68,8 +69,50 @@ def to_circleList_beginner(data):
             circle = data[pre:i, 0:9].copy()
             pre = i
             circleList.append(circle)
-            print(circle.shape)
+            # print(circle.shape)
     return circleList
+
+
+def process_circleList(list):
+    """
+
+    用于处理初学者模型的circleList
+
+    :param list: 分圈后的list
+    :return:
+    """
+    circleList = list.copy()
+
+    # 如果超过70圈 保留后70圈
+    if len(circleList) > 70:
+        circleList = circleList[70 - len(circleList):]
+
+    for i, circle in enumerate(circleList):
+        circleList[i] = padding(circle)
+
+    # 如果不到70圈用0补足70圈
+    zero = np.zeros(shape=(30, 9))
+    while len(circleList) < 70:
+        circleList.append(zero)
+
+    return circleList
+
+
+def process_label(score):
+    """
+
+    用于处理初学者数据的label，将2分和4分随机加减1
+
+    :param score:
+    :return:
+    """
+    option = [1, -1]
+    if score == 2:
+        score = score + random.choice(option)
+    elif score == 4:
+        score = score + random.choice(option)
+
+    return score
 
 
 def load_file(filepath):
@@ -190,8 +233,12 @@ def load_dataset2(dirname, classname, scores=[1, 3, 5]):
 
 
 def load_dataset_beginner(dirname, classname, pklPath="./data/pkl"):
-    X = []
-    y = []
+    X_train = []
+    y_train = []
+
+    scores = [1, 3, 5]
+    label_encoder = LabelEncoder()
+    encoded = label_encoder.fit_transform(scores)
 
     trainList = os.listdir(os.path.join(dirname, classname, "train"))
     testList = os.listdir(os.path.join(dirname, classname, "test"))
@@ -201,13 +248,34 @@ def load_dataset_beginner(dirname, classname, pklPath="./data/pkl"):
 
     for file in trainList:
         data = load_file(os.path.join(dirname, classname, "train", file))
-        y.append([float(index_2_label[int(file.split(".")[0])])])
+        circleList = to_circleList_beginner(data)
+        circleList = process_circleList(circleList)
+        X_train.append(circleList)
+        y_train.append(encoded[scores.index(process_label(int(index_2_label[int(file.split(".")[0])])))])
+
+    y_train = to_categorical(np.array(y_train))  # one-hot编码
+
+    X_test = []
+    y_test = []
+
+    for file in testList:
+        data = load_file(os.path.join(dirname, classname, "test", file))
+        circleList = to_circleList_beginner(data)
+        circleList = process_circleList(circleList)
+        X_test.append(circleList)
+        y_test.append(encoded[scores.index(process_label(int(index_2_label[int(file.split(".")[0])])))])
+
+    y_test = to_categorical(np.array(y_test))  # one-hot编码
+
+    return X_train, X_test, y_train, y_test
 
 
 if __name__ == '__main__':
-    X_train, X_test, y_train, y_test, class_weight = load_dataset2("./data", "shouwan")
-    print(X_train.shape)
-    print(X_test.shape)
+    # X_train, X_test, y_train, y_test, class_weight = load_dataset2("./data", "shouwan")
+    X_train, X_test, y_train, y_test = load_dataset_beginner("./data", "PostionStablity")
+    # print(X_train.shape)
+    # print(X_test.shape)
+    print(len(X_train))
+    print(len(X_test))
     print(y_train.shape)
     print(y_test.shape)
-    print(class_weight)
