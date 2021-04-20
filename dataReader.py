@@ -1,3 +1,5 @@
+import pickle
+
 import pandas as pd
 import os
 import numpy as np
@@ -9,6 +11,15 @@ from tensorflow.python.keras.utils.np_utils import to_categorical
 
 
 def padding(circle):
+    """
+
+    对每一圈数据做padding操作
+    长于30的圈取后30个数据
+    短于30的圈用0填充至30行
+
+    :param circle: 每圈数据
+    :return:
+    """
     if circle.shape[0] > 30:
         circle = circle[circle.shape[0] - 30:, :]
     else:
@@ -18,6 +29,14 @@ def padding(circle):
 
 
 def to_circleList(data):
+    """
+
+    用于教练数据集的分圈
+    并取数据前9列
+
+    :param data: 全部数据
+    :return: 由各圈组成的list，各圈只保留前9列
+    """
     id = data[0, 9]
     pre = 0
     circleList = []
@@ -31,13 +50,43 @@ def to_circleList(data):
     return circleList
 
 
+def to_circleList_beginner(data):
+    """
+
+    用于初学者数据集的分圈
+    并取数据前9列
+
+    :param data: 全部数据
+    :return: 由各圈组成的list，各圈只保留前9列
+    """
+    hallsensor = -1
+    pre = 0
+    circleList = []
+    for i in range(0, data.shape[0]):
+        if data[i, 10] == hallsensor:
+            hallsensor = -hallsensor
+            circle = data[pre:i, 0:9].copy()
+            pre = i
+            circleList.append(circle)
+            print(circle.shape)
+    return circleList
+
+
 def load_file(filepath):
+    """
+
+    加载数据文件
+    并进行数据归一化
+
+    :param filepath:数据文件路径
+    :return:
+    """
     print(filepath)
     row_data = pd.read_csv(filepath)
     dataframe = row_data.copy()
     # 选用三轴加速度、三轴角加速度、欧拉角、和圈id
     colList = ["accelerationx", "accelerationy", "accelerationz", "angularvelocityx", "angularvelocityy",
-               "angularvelocityz", "pitch", "roll", "yaw", "mdlcircle_id"]
+               "angularvelocityz", "pitch", "roll", "yaw", "mdlcircle_id", "hallsensor"]
     # sns.pairplot(dataframe[colList], diag_kind="kde")
     # plt.show()
     data = dataframe[colList].values
@@ -48,6 +97,15 @@ def load_file(filepath):
 
 
 def load_dataset(dirname, classname, scores=[1, 3, 5]):
+    """
+
+    加载教练数据集，在线切割测试集与训练集
+
+    :param dirname: 数据集路径
+    :param classname: 评价指标
+    :param scores: 具体分类类别
+    :return:
+    """
     X = []
     y = []
     label_encoder = LabelEncoder()
@@ -79,6 +137,16 @@ def load_dataset(dirname, classname, scores=[1, 3, 5]):
 
 
 def load_dataset2(dirname, classname, scores=[1, 3, 5]):
+    """
+
+    加载教练数据集，用于固定测试集与训练集
+    并增加返回了用于平衡数据集的class_weights
+
+    :param dirname: 数据集路径
+    :param classname: 评价指标
+    :param scores: 具体分类类别
+    :return:
+    """
     X_train = []
     y_train = []
     y2 = []  # 用作class_weight
@@ -90,18 +158,19 @@ def load_dataset2(dirname, classname, scores=[1, 3, 5]):
     for file in fileList:
         # print(file)
         data = load_file(os.path.join(dirname, classname, "train", file))
-        data = data[:, 0:9].copy()
+        data = data[:, 0:9].copy()  # 取前9列
         X_train.append(padding(data))
         y_train.append([encoded[scores.index(int(file.split("_")[0]))]])
         y2.append(int(file.split("_")[0]))
 
+    # 计算class_weights
     class_weights_array = class_weight.compute_class_weight('balanced', np.unique(scores), np.asarray(y2))
     class_weights = {}
     for i in range(0, encoded.shape[0]):
         class_weights[i] = class_weights_array[i]
 
     X_train = np.array(X_train)
-    y_train = to_categorical(np.array(y_train))
+    y_train = to_categorical(np.array(y_train))  # one-hot编码
 
     X_test = []
     y_test = []
@@ -115,9 +184,24 @@ def load_dataset2(dirname, classname, scores=[1, 3, 5]):
         y_test.append([encoded[scores.index(int(file.split("_")[0]))]])
 
     X_test = np.array(X_test)
-    y_test = to_categorical(np.array(y_test))
+    y_test = to_categorical(np.array(y_test))  # one-hot编码
 
     return X_train, X_test, y_train, y_test, class_weights
+
+
+def load_dataset_beginner(dirname, classname, pklPath="./data/pkl"):
+    X = []
+    y = []
+
+    trainList = os.listdir(os.path.join(dirname, classname, "train"))
+    testList = os.listdir(os.path.join(dirname, classname, "test"))
+
+    with open(os.path.join(pklPath, "index_2_" + classname + ".pkl"), 'rb') as f:
+        index_2_label = pickle.load(f, encoding='bytes')
+
+    for file in trainList:
+        data = load_file(os.path.join(dirname, classname, "train", file))
+        y.append([float(index_2_label[int(file.split(".")[0])])])
 
 
 if __name__ == '__main__':
