@@ -106,6 +106,7 @@ if __name__ == "__main__":
     compile_model(model)
     # plot_model(model, to_file='./model.png')
 
-    history = train_model(model, X_train, y_train, X_test, y_test, class_weights)
+    history, result = train_model(model, X_train, y_train, X_test, y_test, class_weights)
 
+    saveName = modelName + str(round(result[1], 3)) + "_" + curTime + ".h5"
     model.save(os.path.join(modelPath, className, modelName))
