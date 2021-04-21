@@ -72,10 +72,10 @@ def zuoyou_model():
     print("outs complicated")
 
     x = concatenate(outs)
-    x = tf.expand_dims(x, axis=-1)
-    x = LSTM(160, kernel_regularizer=tf.keras.regularizers.l2(0.0001), return_sequences=True)(x)
-    x = LSTM(96, kernel_regularizer=tf.keras.regularizers.l2(0.0001))(x)
-    x = Dropout(0.2)(x)
+    # x = tf.expand_dims(x, axis=-1)
+    # x = LSTM(160, kernel_regularizer=tf.keras.regularizers.l2(0.0001), return_sequences=True)(x)
+    # x = LSTM(96, kernel_regularizer=tf.keras.regularizers.l2(0.0001))(x)
+    # x = Dropout(0.2)(x)
     out = Dense(3, activation='softmax')(x)
     model = Model(inputs, out)
     return model
@@ -92,7 +92,7 @@ def compile_model(model):
     return model
 
 
-def train_model(model, trainX, trainy, testX, testy,class_weights):
+def train_model(model, trainX, trainy, testX, testy, class_weights):
     history = model.fit(trainX, trainy, epochs=epochs, batch_size=batch_size, validation_data=(testX, testy),
                         class_weight=class_weights, callbacks=get_callbacks(), shuffle=True)
     result = model.evaluate(testX, testy, batch_size=batch_size)
@@ -106,9 +106,6 @@ if __name__ == "__main__":
     compile_model(model)
     # plot_model(model, to_file='./model.png')
 
-    history = train_model(model, X_train, y_train, X_test, y_test,class_weights)
+    history = train_model(model, X_train, y_train, X_test, y_test, class_weights)
 
-    # 继续编写模型部分代码，需要compile，另外也需要测试目前datareader的写法是否正确,特别是多输入的编写是否正确
-    # 另外，class_weight也需要应用在初学者数据集上，等模型运行成功后处理
-    # 还需要读入已训练的参数
-    # dataReader部分可能需要每个input单独建立array，明天基本写完模型测试时再说
+    model.save(os.path.join(modelPath, className, modelName))
