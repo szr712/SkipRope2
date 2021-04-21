@@ -1,24 +1,30 @@
+import os
+
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Dropout
 from tensorflow.keras.layers import LSTM
 import tensorflow as tf
 from tensorflow.python.keras import Input
 from tensorflow.python.keras.layers import concatenate
-from tensorflow.python.keras.models import Model
+from tensorflow.python.keras.models import Model, load_model
+from tensorflow.python.keras.optimizer_v2.adam import Adam
+from tensorflow.python.keras.optimizer_v2.rmsprop import RMSprop
+from tensorflow.python.keras.utils.version_utils import callbacks
 from tensorflow.python.keras.utils.vis_utils import plot_model
 
 from dataReader import padding, load_dataset_beginner
 from datetime import datetime
 
-modelName = "手臂得分_class_weight_"
+modelName = "初学者位置稳定性_test1_"
 
 # os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
-epochs, batch_size = 300, 32
+epochs, batch_size = 200, 4
 dataSet = "./data"
 className = "PostionStablity"
 logDir = "./logs"
 curTime = datetime.now().strftime("_%Y%m%d_%H_%M_%S")
 modelPath = "./model"
+extractor = "zuoyou/左右得分_class_weight_0.997__20210419_19_16_24.h5"
 
 
 def to_circleList(data):
@@ -37,37 +43,70 @@ def to_circleList(data):
     return circleList
 
 
-def circle_layer():
-    model = Sequential(name="circle_layer")
-    model.add(LSTM(64, input_shape=(30, 9), return_sequences=True, kernel_regularizer=tf.keras.regularizers.l2(0.0001)))
-    model.add(LSTM(64, kernel_regularizer=tf.keras.regularizers.l2(0.0001)))
+def circle_model():
+    model = load_model(os.path.join(modelPath, extractor))
+    model = Model(inputs=model.input, outputs=model.layers[1].output, name="circle_model")
     return model
+
+
+def get_callbacks():
+    return [
+        callbacks.EarlyStopping(monitor='val_loss', patience=20, restore_best_weights=True),  # 就是需要对验证集的loss监听
+        callbacks.TensorBoard(log_dir=os.path.join(logDir, className, modelName + curTime)),
+    ]
 
 
 def zuoyou_model():
     inputs = []
     for i in range(0, 70):
         inputs.append(Input(shape=(30, 9)))
+    print("inputs complicated")
 
-    clayer = circle_layer()
+    feature = circle_model()
+    feature.trainable = False
 
     outs = []
 
     for input in inputs:
-        outs.append(clayer(input))
+        outs.append(feature(input))
+    print("outs complicated")
 
-    concatenated = concatenate(outs)
-    out = Dense(1, activation='sigmoid')(concatenated)
+    x = concatenate(outs)
+    x = tf.expand_dims(x, axis=-1)
+    x = LSTM(160, kernel_regularizer=tf.keras.regularizers.l2(0.0001), return_sequences=True)(x)
+    x = LSTM(96, kernel_regularizer=tf.keras.regularizers.l2(0.0001))(x)
+    x = Dropout(0.2)(x)
+    out = Dense(3, activation='softmax')(x)
     model = Model(inputs, out)
     return model
 
 
+def compile_model(model):
+    learning_rate = tf.keras.optimizers.schedules.ExponentialDecay(
+        0.0003,
+        decay_steps=3000,
+        decay_rate=0.8)
+
+    model.compile(loss='categorical_crossentropy', optimizer=Adam(learning_rate), metrics=['acc'])
+    model.summary()
+    return model
+
+
+def train_model(model, trainX, trainy, testX, testy,class_weights):
+    history = model.fit(trainX, trainy, epochs=epochs, batch_size=batch_size, validation_data=(testX, testy),
+                        class_weight=class_weights, callbacks=get_callbacks(), shuffle=True)
+    result = model.evaluate(testX, testy, batch_size=batch_size)
+    return history, result
+
+
 if __name__ == "__main__":
-    X_train, X_test, y_train, y_test = load_dataset_beginner(dataSet, className)
+    X_train, X_test, y_train, y_test, class_weights = load_dataset_beginner(dataSet, className)
 
     model = zuoyou_model()
+    compile_model(model)
     # plot_model(model, to_file='./model.png')
-    model.summary()
+
+    history = train_model(model, X_train, y_train, X_test, y_test,class_weights)
 
     # 继续编写模型部分代码，需要compile，另外也需要测试目前datareader的写法是否正确,特别是多输入的编写是否正确
     # 另外，class_weight也需要应用在初学者数据集上，等模型运行成功后处理

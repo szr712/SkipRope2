@@ -233,8 +233,9 @@ def load_dataset2(dirname, classname, scores=[1, 3, 5]):
 
 
 def load_dataset_beginner(dirname, classname, pklPath="./data/pkl"):
-    X_train = []
+    X_train = [[] for _ in range(70)]
     y_train = []
+    y2 = []
 
     scores = [1, 3, 5]
     label_encoder = LabelEncoder()
@@ -250,32 +251,50 @@ def load_dataset_beginner(dirname, classname, pklPath="./data/pkl"):
         data = load_file(os.path.join(dirname, classname, "train", file))
         circleList = to_circleList_beginner(data)
         circleList = process_circleList(circleList)
-        X_train.append(circleList)
+        for i, circle in enumerate(circleList):
+            X_train[i].append(circle)
+        # X_train.append(circleList)
         y_train.append(encoded[scores.index(process_label(int(index_2_label[int(file.split(".")[0])])))])
+        y2.append(process_label(int(index_2_label[int(file.split(".")[0])])))
 
+    class_weights_array = class_weight.compute_class_weight('balanced', np.unique(scores), np.asarray(y2))
+    class_weights = {}
+    for i in range(0, encoded.shape[0]):
+        class_weights[i] = class_weights_array[i]
+
+    for i, x in enumerate(X_train):
+        X_train[i] = np.array(x)
     y_train = to_categorical(np.array(y_train))  # one-hot编码
 
-    X_test = []
+    X_test = [[] for _ in range(70)]
     y_test = []
 
     for file in testList:
         data = load_file(os.path.join(dirname, classname, "test", file))
         circleList = to_circleList_beginner(data)
         circleList = process_circleList(circleList)
-        X_test.append(circleList)
+        for i, circle in enumerate(circleList):
+            X_test[i].append(circle)
         y_test.append(encoded[scores.index(process_label(int(index_2_label[int(file.split(".")[0])])))])
 
+    for i, x in enumerate(X_test):
+        X_test[i] = np.array(x)
     y_test = to_categorical(np.array(y_test))  # one-hot编码
 
-    return X_train, X_test, y_train, y_test
+    return X_train, X_test, y_train, y_test, class_weights
 
 
 if __name__ == '__main__':
     # X_train, X_test, y_train, y_test, class_weight = load_dataset2("./data", "shouwan")
-    X_train, X_test, y_train, y_test = load_dataset_beginner("./data", "PostionStablity")
+    X_train, X_test, y_train, y_test, class_weights = load_dataset_beginner("./data", "PostionStablity")
     # print(X_train.shape)
     # print(X_test.shape)
     print(len(X_train))
     print(len(X_test))
+    for x in X_train:
+        print(x.shape)
+    for x in X_test:
+        print(x.shape)
     print(y_train.shape)
     print(y_test.shape)
+    print(class_weights)
