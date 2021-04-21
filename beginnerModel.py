@@ -18,7 +18,7 @@ from datetime import datetime
 modelName = "初学者位置稳定性_test1_"
 
 # os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
-epochs, batch_size = 200, 4
+epochs, batch_size = 200, 64
 dataSet = "./data"
 className = "PostionStablity"
 logDir = "./logs"
