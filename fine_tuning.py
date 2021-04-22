@@ -9,7 +9,7 @@ from dataReader import load_dataset_beginner
 
 modelName="初学者位置稳定性_dense1_fine_tuning2_"
 
-epochs, batch_size = 200, 64
+epochs, batch_size = 200, 256
 dataSet = "./data"
 className = "PostionStablity"
 logDir = "./logs"
