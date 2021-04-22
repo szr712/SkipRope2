@@ -31,7 +31,7 @@ def train_model(model, trainX, trainy, testX, testy, class_weights):
     return history, result
 
 def compile_model(model):
-    model.compile(loss='categorical_crossentropy', optimizer=Adam(1e-5), metrics=['acc'])
+    model.compile(loss='categorical_crossentropy', optimizer=Adam(1e-6), metrics=['acc'])
     model.summary()
 
 if __name__=="__main__":

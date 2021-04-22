@@ -5,14 +5,14 @@ from tensorflow.python.keras.models import load_model
 
 from dataReader import load_dataset2,load_dataset_beginner
 
-modelName = "初学者位置稳定性_test1_0.576__20210421_17_11_43.h5"
+modelName = "手臂得分_class_weight_0.974__20210419_20_14_55.h5"
 modelPath = "./model"
-className = "PostionStablity"
+className = "shoubi"
 
 
 def test_classification(model):
-    # X_train, X_test, y_train, y_test, _ = load_dataset2("./data", className)
-    X_train, X_test, y_train, y_test, _ = load_dataset_beginner("./data", className)
+    X_train, X_test, y_train, y_test, _ = load_dataset2("./data", className)
+    # X_train, X_test, y_train, y_test, _ = load_dataset_beginner("./data", className)
 
     model.evaluate(X_test, y_test)
 
