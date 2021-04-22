@@ -252,7 +252,7 @@ def load_dataset_beginner(dirname, classname, pklPath="./data/pkl"):
         circleList = to_circleList_beginner(data)
 
         # 在线扩容
-        for i in range(0, 100):
+        for i in range(0, 200):
             if i != 0:
                 random.shuffle(circleList)
             list = process_circleList(circleList)

@@ -15,7 +15,7 @@ from tensorflow.python.keras.utils.vis_utils import plot_model
 from dataReader import padding, load_dataset_beginner
 from datetime import datetime
 
-modelName = "初学者位置稳定性_test1_"
+modelName = "初学者位置稳定性_dense1_"
 
 # os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 epochs, batch_size = 200, 64
@@ -51,7 +51,7 @@ def circle_model():
 
 def get_callbacks():
     return [
-        callbacks.EarlyStopping(monitor='val_loss', patience=20, restore_best_weights=True),  # 就是需要对验证集的loss监听
+        callbacks.EarlyStopping(monitor='val_acc', patience=20, restore_best_weights=True),  # 就是需要对验证集的loss监听
         callbacks.TensorBoard(log_dir=os.path.join(logDir, className, modelName + curTime)),
     ]
 
@@ -72,10 +72,11 @@ def zuoyou_model():
     print("outs complicated")
 
     x = concatenate(outs)
+    # x = Dense(64, activation="relu")(x)
     # x = tf.expand_dims(x, axis=-1)
-    # x = LSTM(160, kernel_regularizer=tf.keras.regularizers.l2(0.0001), return_sequences=True)(x)
+    # x = LSTM(64, kernel_regularizer=tf.keras.regularizers.l2(0.0001))(x)
     # x = LSTM(96, kernel_regularizer=tf.keras.regularizers.l2(0.0001))(x)
-    # x = Dropout(0.2)(x)
+    x = Dropout(0.2)(x)
     out = Dense(3, activation='softmax')(x)
     model = Model(inputs, out)
     return model
@@ -109,4 +110,4 @@ if __name__ == "__main__":
     history, result = train_model(model, X_train, y_train, X_test, y_test, class_weights)
 
     saveName = modelName + str(round(result[1], 3)) + "_" + curTime + ".h5"
-    model.save(os.path.join(modelPath, className, modelName))
+    model.save(os.path.join(modelPath, className, saveName))
