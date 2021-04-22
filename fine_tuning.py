@@ -7,7 +7,7 @@ from tensorflow.python.keras.utils.version_utils import callbacks
 
 from dataReader import load_dataset_beginner
 
-modelName="初学者位置稳定性_test1_fine_tuning1_"
+modelName="初学者位置稳定性_dense1_fine_tuning2_"
 
 epochs, batch_size = 200, 32
 dataSet = "./data"
@@ -15,7 +15,7 @@ className = "PostionStablity"
 logDir = "./logs"
 curTime = datetime.now().strftime("_%Y%m%d_%H_%M_%S")
 modelPath = "./model"
-preModel = "初学者位置稳定性_test1_0.576__20210421_17_11_43.h5"
+preModel = "初学者位置稳定性_dense1_0.606__20210422_08_46_52.h5"
 
 def get_callbacks():
     return [
