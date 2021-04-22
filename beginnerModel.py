@@ -15,7 +15,7 @@ from tensorflow.python.keras.utils.vis_utils import plot_model
 from dataReader import padding, load_dataset_beginner
 from datetime import datetime
 
-modelName = "初学者位置稳定性_dense1_不固定_"
+modelName = "初学者位置稳定性_LSTM1_不固定_"
 
 # os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 epochs, batch_size = 200, 512
@@ -74,8 +74,8 @@ def zuoyou_model():
     x = concatenate(outs)
 
     # x = Dense(64, activation="relu")(x)
-    # x = tf.expand_dims(x, axis=-1)
-    # x = LSTM(64, kernel_regularizer=tf.keras.regularizers.l2(0.0001))(x)
+    x = tf.expand_dims(x, axis=-1)
+    x = LSTM(64, kernel_regularizer=tf.keras.regularizers.l2(0.0001))(x)
     # x = LSTM(96, kernel_regularizer=tf.keras.regularizers.l2(0.0001))(x)
     x = Dropout(0.5)(x)
     out = Dense(3, activation='softmax')(x)
@@ -95,7 +95,7 @@ def compile_model(model):
 
 
 def train_model(model, trainX, trainy, testX, testy, class_weights):
-    history = model.fit(trainX, trainy, epochs=epochs, batch_size=batch_size, validation_split=0.3,
+    history = model.fit(trainX, trainy, epochs=epochs, batch_size=batch_size, validation_data=(testX, testy),
                         class_weight=class_weights, callbacks=get_callbacks(), shuffle=True)
     result = model.evaluate(testX, testy, batch_size=batch_size)
     return history, result
