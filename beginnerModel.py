@@ -15,7 +15,7 @@ from tensorflow.python.keras.utils.vis_utils import plot_model
 from dataReader import padding, load_dataset_beginner
 from datetime import datetime
 
-modelName = "初学者位置稳定性_dense1_"
+modelName = "初学者位置稳定性_dense1_不固定_"
 
 # os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 epochs, batch_size = 200, 64
@@ -63,7 +63,7 @@ def zuoyou_model():
     print("inputs complicated")
 
     feature = circle_model()
-    feature.trainable = False
+    # feature.trainable = False
 
     outs = []
 
