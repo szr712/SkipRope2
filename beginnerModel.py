@@ -72,11 +72,12 @@ def zuoyou_model():
     print("outs complicated")
 
     x = concatenate(outs)
+
     # x = Dense(64, activation="relu")(x)
     # x = tf.expand_dims(x, axis=-1)
     # x = LSTM(64, kernel_regularizer=tf.keras.regularizers.l2(0.0001))(x)
     # x = LSTM(96, kernel_regularizer=tf.keras.regularizers.l2(0.0001))(x)
-    x = Dropout(0.2)(x)
+    x = Dropout(0.5)(x)
     out = Dense(3, activation='softmax')(x)
     model = Model(inputs, out)
     return model
@@ -94,7 +95,7 @@ def compile_model(model):
 
 
 def train_model(model, trainX, trainy, testX, testy, class_weights):
-    history = model.fit(trainX, trainy, epochs=epochs, batch_size=batch_size, validation_data=(testX, testy),
+    history = model.fit(trainX, trainy, epochs=epochs, batch_size=batch_size, validation_split=0.3,
                         class_weight=class_weights, callbacks=get_callbacks(), shuffle=True)
     result = model.evaluate(testX, testy, batch_size=batch_size)
     return history, result
