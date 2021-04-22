@@ -9,7 +9,7 @@ from dataReader import load_dataset_beginner
 
 modelName="初学者位置稳定性_dense1_fine_tuning2_"
 
-epochs, batch_size = 200, 32
+epochs, batch_size = 200, 64
 dataSet = "./data"
 className = "PostionStablity"
 logDir = "./logs"
@@ -31,7 +31,7 @@ def train_model(model, trainX, trainy, testX, testy, class_weights):
     return history, result
 
 def compile_model(model):
-    model.compile(loss='categorical_crossentropy', optimizer=Adam(1e-6), metrics=['acc'])
+    model.compile(loss='categorical_crossentropy', optimizer=Adam(1e-5), metrics=['acc'])
     model.summary()
 
 if __name__=="__main__":
