@@ -278,10 +278,20 @@ def load_dataset_beginner(dirname, classname, pklPath="./data/pkl"):
     for file in testList:
         data = load_file(os.path.join(dirname, classname, "test", file))
         circleList = to_circleList_beginner(data)
-        circleList = process_circleList(circleList)
-        for i, circle in enumerate(circleList):
-            X_test[i].append(circle)
-        y_test.append(encoded[scores.index(process_label(int(index_2_label[int(file.split(".")[0])])))])
+
+        # 在线扩容
+        for i in range(0, 200):
+            if i != 0:
+                random.shuffle(circleList)
+            list = process_circleList(circleList)
+            for i, circle in enumerate(list):
+                X_test[i].append(circle.copy())
+
+            y_test.append(encoded[scores.index(process_label(int(index_2_label[int(file.split(".")[0])])))])
+        # circleList = process_circleList(circleList)
+        # for i, circle in enumerate(circleList):
+        #     X_test[i].append(circle)
+        # y_test.append(encoded[scores.index(process_label(int(index_2_label[int(file.split(".")[0])])))])
 
     for i, x in enumerate(X_test):
         X_test[i] = np.array(x)
