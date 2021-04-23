@@ -15,7 +15,7 @@ from tensorflow.python.keras.utils.vis_utils import plot_model
 from dataReader import padding, load_dataset_beginner
 from datetime import datetime
 
-modelName = "初学者位置稳定性_Dense2_不固定_"
+modelName = "初学者位置稳定性_Dense1_不读取参数_"
 
 # os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 epochs, batch_size = 200, 512
@@ -44,8 +44,11 @@ def to_circleList(data):
 
 
 def circle_model():
-    model = load_model(os.path.join(modelPath, extractor))
-    model = Model(inputs=model.input, outputs=model.layers[1].output, name="circle_model")
+    # model = load_model(os.path.join(modelPath, extractor))
+    # model = Model(inputs=model.input, outputs=model.layers[1].output, name="circle_model")
+    model = Sequential(name="circle_model")
+    model.add(LSTM(64, input_shape=(30, 9), return_sequences=True, kernel_regularizer=tf.keras.regularizers.l2(0.0001)))
+    model.add(LSTM(64, kernel_regularizer=tf.keras.regularizers.l2(0.0001)))
     return model
 
 
@@ -73,7 +76,7 @@ def zuoyou_model():
 
     x = concatenate(outs)
 
-    x = Dense(64, activation="relu", kernel_regularizer=tf.keras.regularizers.l2(0.0001))(x)
+    # x = Dense(64, activation="relu", kernel_regularizer=tf.keras.regularizers.l2(0.0001))(x)
     # x = tf.expand_dims(x, axis=-1)
     # x = LSTM(64, kernel_regularizer=tf.keras.regularizers.l2(0.0001))(x)
     # x = LSTM(96, kernel_regularizer=tf.keras.regularizers.l2(0.0001))(x)
