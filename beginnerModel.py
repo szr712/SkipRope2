@@ -88,7 +88,6 @@ def zuoyou_model():
     # x = tf.expand_dims(x, axis=-1)
     # x = LSTM(64, kernel_regularizer=tf.keras.regularizers.l2(0.0001))(x)
     # x = LSTM(96, kernel_regularizer=tf.keras.regularizers.l2(0.0001))(x)
-    x = Dropout(0.5)(x)
     # out = Dense(3, activation='softmax')(x)
     out = Dense(1)(x)
     model = Model(inputs, out)
