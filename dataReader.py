@@ -367,8 +367,8 @@ def load_dataset_beginner_reg(dirname, classname, pklPath="./data/pkl"):
     # 对训练集标签增加高斯噪声
     for i in range(y_train.shape[0]):
         y_train[i] += random.gauss(mu, sigma)
-    plt.scatter(np.arange(y_train.shape[0]), y_train)
-    plt.show()
+    # plt.scatter(np.arange(y_train.shape[0]), y_train)
+    # plt.show()
 
     return X_train, X_test, y_train, y_test
 
@@ -386,4 +386,3 @@ if __name__ == '__main__':
         print(x.shape)
     print(y_train.shape)
     print(y_test.shape)
-    print(class_weights)
