@@ -333,7 +333,7 @@ def load_dataset_beginner_reg(dirname, classname, pklPath="./data/pkl"):
 
     for i, x in enumerate(X_train):
         X_train[i] = np.array(x)
-    y_train = np.array(y_train)
+    y_train = np.array(y_train, dtype=np.float64)
 
     X_test = [[] for _ in range(70)]
     y_test = []
@@ -358,7 +358,7 @@ def load_dataset_beginner_reg(dirname, classname, pklPath="./data/pkl"):
 
     for i, x in enumerate(X_test):
         X_test[i] = np.array(x)
-    y_test = np.array(y_test)  # one-hot编码
+    y_test = np.array(y_test, dtype=np.float64)
 
     return X_train, X_test, y_train, y_test, class_weights
 
