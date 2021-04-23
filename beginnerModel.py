@@ -100,15 +100,17 @@ def compile_model(model):
 
 
 def train_model(model, trainX, trainy, testX, testy, class_weights):
+    # history = model.fit(trainX, trainy, epochs=epochs, batch_size=batch_size, validation_data=(testX, testy),
+    #                     class_weight=class_weights, callbacks=get_callbacks(), shuffle=True)
     history = model.fit(trainX, trainy, epochs=epochs, batch_size=batch_size, validation_data=(testX, testy),
-                        class_weight=class_weights, callbacks=get_callbacks(), shuffle=True)
+                        callbacks=get_callbacks(), shuffle=True)
     result = model.evaluate(testX, testy, batch_size=batch_size)
     return history, result
 
 
 if __name__ == "__main__":
     print(modelName)
-    X_train, X_test, y_train, y_test, class_weights = load_dataset_beginner_reg(dataSet, className)
+    X_train, X_test, y_train, y_test = load_dataset_beginner_reg(dataSet, className)
 
     model = zuoyou_model()
     compile_model(model)

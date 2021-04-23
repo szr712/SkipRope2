@@ -1,5 +1,6 @@
 import pickle
 import random
+import matplotlib.pyplot as plt
 
 import pandas as pd
 import os
@@ -304,7 +305,10 @@ def load_dataset_beginner_reg(dirname, classname, pklPath="./data/pkl"):
     X_train = [[] for _ in range(70)]
     y_train = []
 
-    scores = [1, 3, 4, 5]
+    # 定义gauss噪声的均值和方差
+    mu = 0
+    sigma = 0.25
+
     trainList = os.listdir(os.path.join(dirname, classname, "train"))
     testList = os.listdir(os.path.join(dirname, classname, "test"))
 
@@ -326,10 +330,10 @@ def load_dataset_beginner_reg(dirname, classname, pklPath="./data/pkl"):
             y_train.append(int(index_2_label[int(file.split(".")[0])]))
 
     # 计算class_weights
-    class_weights_array = class_weight.compute_class_weight('balanced', np.unique(scores), np.asarray(y_train))
-    class_weights = {}
-    for i, score in enumerate(scores):
-        class_weights[score] = class_weights_array[i]
+    # class_weights_array = class_weight.compute_class_weight('balanced', np.unique(scores), np.asarray(y_train))
+    # class_weights = {}
+    # for i, score in enumerate(scores):
+    #     class_weights[score] = class_weights_array[i]
 
     for i, x in enumerate(X_train):
         X_train[i] = np.array(x)
@@ -360,12 +364,18 @@ def load_dataset_beginner_reg(dirname, classname, pklPath="./data/pkl"):
         X_test[i] = np.array(x)
     y_test = np.array(y_test, dtype=np.float64)
 
-    return X_train, X_test, y_train, y_test, class_weights
+    # 对训练集标签增加高斯噪声
+    for i in range(y_train.shape[0]):
+        y_train[i] += random.gauss(mu, sigma)
+    plt.scatter(np.arange(y_train.shape[0]), y_train)
+    plt.show()
+
+    return X_train, X_test, y_train, y_test
 
 
 if __name__ == '__main__':
     # X_train, X_test, y_train, y_test, class_weight = load_dataset2("./data", "shouwan")
-    X_train, X_test, y_train, y_test, class_weights = load_dataset_beginner_reg("./data", "PostionStablity")
+    X_train, X_test, y_train, y_test = load_dataset_beginner_reg("./data", "PostionStablity")
     # print(X_train.shape)
     # print(X_test.shape)
     print(len(X_train))
