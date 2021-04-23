@@ -18,7 +18,7 @@ from datetime import datetime
 modelName = "初学者位置稳定性_Dense1_分类_不扩容"
 
 # os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
-epochs, batch_size = 200, 512
+epochs, batch_size = 200, 64
 dataSet = "./data"
 className = "PostionStablity"
 logDir = "./logs"
@@ -87,8 +87,8 @@ def zuoyou_model():
     # x = tf.expand_dims(x, axis=-1)
     # x = LSTM(64, kernel_regularizer=tf.keras.regularizers.l2(0.0001))(x)
     # x = LSTM(96, kernel_regularizer=tf.keras.regularizers.l2(0.0001))(x)
-    # out = Dense(3, activation='softmax')(x)
-    out = Dense(1)(x)
+    out = Dense(3, activation='softmax')(x)
+    # out = Dense(1)(x)
     model = Model(inputs, out)
     return model
 
@@ -106,7 +106,7 @@ def compile_model(model):
     return model
 
 
-def train_model(model, trainX, trainy, testX, testy,class_weights):
+def train_model(model, trainX, trainy, testX, testy, class_weights):
     history = model.fit(trainX, trainy, epochs=epochs, batch_size=batch_size, validation_data=(testX, testy),
                         class_weight=class_weights, callbacks=get_callbacks(), shuffle=True)
     # history = model.fit(trainX, trainy, epochs=epochs, batch_size=batch_size, validation_data=(testX, testy),
@@ -117,13 +117,13 @@ def train_model(model, trainX, trainy, testX, testy,class_weights):
 
 if __name__ == "__main__":
     print(modelName)
-    X_train, X_test, y_train, y_test,class_weights = load_dataset_beginner(dataSet, className)
+    X_train, X_test, y_train, y_test, class_weights = load_dataset_beginner(dataSet, className)
 
     model = zuoyou_model()
     compile_model(model)
     # plot_model(model, to_file='./model.png')
 
-    history, result = train_model(model, X_train, y_train, X_test, y_test,class_weights)
+    history, result = train_model(model, X_train, y_train, X_test, y_test, class_weights)
 
     saveName = modelName + str(round(result[1], 3)) + "_" + curTime + ".h5"
     model.save(os.path.join(modelPath, className, saveName))
