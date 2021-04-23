@@ -15,7 +15,7 @@ from tensorflow.python.keras.utils.vis_utils import plot_model
 from dataReader import padding, load_dataset_beginner, load_dataset_beginner_reg
 from datetime import datetime
 
-modelName = "初学者位置稳定性_Dense1_自定义损失函数_回归_不扩容_"
+modelName = "初学者位置稳定性_Dense1_分类_不扩容"
 
 # os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 epochs, batch_size = 200, 512
@@ -99,9 +99,9 @@ def compile_model(model):
         decay_steps=3000,
         decay_rate=0.8)
 
-    # model.compile(loss='categorical_crossentropy', optimizer=Adam(learning_rate), metrics=['acc'])
+    model.compile(loss='categorical_crossentropy', optimizer=Adam(learning_rate), metrics=['acc'])
     # model.compile(loss='mse', optimizer=RMSprop(learning_rate), metrics=['mse', 'mae'])
-    model.compile(loss=my_loss_fn, optimizer=RMSprop(learning_rate), metrics=my_loss_fn)
+    # model.compile(loss=my_loss_fn, optimizer=RMSprop(learning_rate), metrics=my_loss_fn)
     model.summary()
     return model
 
@@ -117,7 +117,7 @@ def train_model(model, trainX, trainy, testX, testy):
 
 if __name__ == "__main__":
     print(modelName)
-    X_train, X_test, y_train, y_test = load_dataset_beginner_reg(dataSet, className)
+    X_train, X_test, y_train, y_test = load_dataset_beginner(dataSet, className)
 
     model = zuoyou_model()
     compile_model(model)
