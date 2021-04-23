@@ -18,7 +18,7 @@ from datetime import datetime
 modelName = "初学者位置稳定性_Dense1_分类_不扩容"
 
 # os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
-epochs, batch_size = 200, 64
+epochs, batch_size = 200, 512
 dataSet = "./data"
 className = "PostionStablity"
 logDir = "./logs"
@@ -44,11 +44,11 @@ def to_circleList(data):
 
 
 def circle_model():
-    # model = load_model(os.path.join(modelPath, extractor))
-    # model = Model(inputs=model.input, outputs=model.layers[1].output, name="circle_model")
-    model = Sequential(name="circle_model")
-    model.add(LSTM(64, input_shape=(30, 9), return_sequences=True, kernel_regularizer=tf.keras.regularizers.l2(0.0001)))
-    model.add(LSTM(64, kernel_regularizer=tf.keras.regularizers.l2(0.0001)))
+    model = load_model(os.path.join(modelPath, extractor))
+    model = Model(inputs=model.input, outputs=model.layers[1].output, name="circle_model")
+    # model = Sequential(name="circle_model")
+    # model.add(LSTM(64, input_shape=(30, 9), return_sequences=True, kernel_regularizer=tf.keras.regularizers.l2(0.0001)))
+    # model.add(LSTM(64, kernel_regularizer=tf.keras.regularizers.l2(0.0001)))
     return model
 
 
