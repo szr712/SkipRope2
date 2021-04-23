@@ -105,6 +105,7 @@ def train_model(model, trainX, trainy, testX, testy, class_weights):
 
 
 if __name__ == "__main__":
+    print(modelName)
     X_train, X_test, y_train, y_test, class_weights = load_dataset_beginner(dataSet, className)
 
     model = zuoyou_model()
