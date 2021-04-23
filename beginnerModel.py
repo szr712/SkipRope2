@@ -12,10 +12,10 @@ from tensorflow.python.keras.optimizer_v2.rmsprop import RMSprop
 from tensorflow.python.keras.utils.version_utils import callbacks
 from tensorflow.python.keras.utils.vis_utils import plot_model
 
-from dataReader import padding, load_dataset_beginner
+from dataReader import padding, load_dataset_beginner, load_dataset_beginner_reg
 from datetime import datetime
 
-modelName = "初学者位置稳定性_Dense1_不读取参数_"
+modelName = "初学者位置稳定性_Dense1_回归_"
 
 # os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 epochs, batch_size = 200, 512
@@ -44,17 +44,17 @@ def to_circleList(data):
 
 
 def circle_model():
-    # model = load_model(os.path.join(modelPath, extractor))
-    # model = Model(inputs=model.input, outputs=model.layers[1].output, name="circle_model")
-    model = Sequential(name="circle_model")
-    model.add(LSTM(64, input_shape=(30, 9), return_sequences=True, kernel_regularizer=tf.keras.regularizers.l2(0.0001)))
-    model.add(LSTM(64, kernel_regularizer=tf.keras.regularizers.l2(0.0001)))
+    model = load_model(os.path.join(modelPath, extractor))
+    model = Model(inputs=model.input, outputs=model.layers[1].output, name="circle_model")
+    # model = Sequential(name="circle_model")
+    # model.add(LSTM(64, input_shape=(30, 9), return_sequences=True, kernel_regularizer=tf.keras.regularizers.l2(0.0001)))
+    # model.add(LSTM(64, kernel_regularizer=tf.keras.regularizers.l2(0.0001)))
     return model
 
 
 def get_callbacks():
     return [
-        callbacks.EarlyStopping(monitor='val_acc', patience=20, restore_best_weights=True),  # 就是需要对验证集的loss监听
+        callbacks.EarlyStopping(monitor='val_loss', patience=20, restore_best_weights=True),  # 就是需要对验证集的loss监听
         callbacks.TensorBoard(log_dir=os.path.join(logDir, className, modelName + curTime)),
     ]
 
@@ -81,7 +81,8 @@ def zuoyou_model():
     # x = LSTM(64, kernel_regularizer=tf.keras.regularizers.l2(0.0001))(x)
     # x = LSTM(96, kernel_regularizer=tf.keras.regularizers.l2(0.0001))(x)
     x = Dropout(0.5)(x)
-    out = Dense(3, activation='softmax')(x)
+    # out = Dense(3, activation='softmax')(x)
+    out = Dense(1)(x)
     model = Model(inputs, out)
     return model
 
@@ -92,7 +93,8 @@ def compile_model(model):
         decay_steps=3000,
         decay_rate=0.8)
 
-    model.compile(loss='categorical_crossentropy', optimizer=Adam(learning_rate), metrics=['acc'])
+    # model.compile(loss='categorical_crossentropy', optimizer=Adam(learning_rate), metrics=['acc'])
+    model.compile(loss='mse', optimizer=RMSprop(learning_rate), metrics=['mse', 'mae'])
     model.summary()
     return model
 
@@ -106,7 +108,7 @@ def train_model(model, trainX, trainy, testX, testy, class_weights):
 
 if __name__ == "__main__":
     print(modelName)
-    X_train, X_test, y_train, y_test, class_weights = load_dataset_beginner(dataSet, className)
+    X_train, X_test, y_train, y_test, class_weights = load_dataset_beginner_reg(dataSet, className)
 
     model = zuoyou_model()
     compile_model(model)
