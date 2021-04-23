@@ -44,11 +44,11 @@ def to_circleList(data):
 
 
 def circle_model():
-    model = load_model(os.path.join(modelPath, extractor))
-    model = Model(inputs=model.input, outputs=model.layers[1].output, name="circle_model")
-    # model = Sequential(name="circle_model")
-    # model.add(LSTM(64, input_shape=(30, 9), return_sequences=True, kernel_regularizer=tf.keras.regularizers.l2(0.0001)))
-    # model.add(LSTM(64, kernel_regularizer=tf.keras.regularizers.l2(0.0001)))
+    # model = load_model(os.path.join(modelPath, extractor))
+    # model = Model(inputs=model.input, outputs=model.layers[1].output, name="circle_model")
+    model = Sequential(name="circle_model")
+    model.add(LSTM(64, input_shape=(30, 9), return_sequences=True, kernel_regularizer=tf.keras.regularizers.l2(0.0001)))
+    model.add(LSTM(64, kernel_regularizer=tf.keras.regularizers.l2(0.0001)))
     return model
 
 
@@ -60,7 +60,6 @@ def get_callbacks():
 
 
 def my_loss_fn(y_true, y_pred):
-
     zeros = tf.zeros_like(y_pred, dtype=y_pred.dtype)
     ones = tf.ones_like(y_pred, dtype=y_pred.dtype)
     filter = tf.where(tf.abs(y_true - y_pred) > 1, ones, zeros)
