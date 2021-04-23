@@ -59,6 +59,14 @@ def get_callbacks():
     ]
 
 
+def my_loss_fn(y_true, y_pred):
+
+    zeros = tf.zeros_like(y_pred, dtype=y_pred.dtype)
+    ones = tf.ones_like(y_pred, dtype=y_pred.dtype)
+    filter = tf.where(tf.abs(y_true - y_pred) > 1, ones, zeros)
+    return tf.reduce_mean(filter * tf.square(y_pred - y_true), axis=-1)
+
+
 def zuoyou_model():
     inputs = []
     for i in range(0, 70):
@@ -94,7 +102,8 @@ def compile_model(model):
         decay_rate=0.8)
 
     # model.compile(loss='categorical_crossentropy', optimizer=Adam(learning_rate), metrics=['acc'])
-    model.compile(loss='mse', optimizer=RMSprop(learning_rate), metrics=['mse', 'mae'])
+    # model.compile(loss='mse', optimizer=RMSprop(learning_rate), metrics=['mse', 'mae'])
+    model.compile(loss=my_loss_fn, optimizer=RMSprop(learning_rate), metrics=my_loss_fn)
     model.summary()
     return model
 
