@@ -106,24 +106,24 @@ def compile_model(model):
     return model
 
 
-def train_model(model, trainX, trainy, testX, testy):
-    # history = model.fit(trainX, trainy, epochs=epochs, batch_size=batch_size, validation_data=(testX, testy),
-    #                     class_weight=class_weights, callbacks=get_callbacks(), shuffle=True)
+def train_model(model, trainX, trainy, testX, testy,class_weights):
     history = model.fit(trainX, trainy, epochs=epochs, batch_size=batch_size, validation_data=(testX, testy),
-                        callbacks=get_callbacks(), shuffle=True)
+                        class_weight=class_weights, callbacks=get_callbacks(), shuffle=True)
+    # history = model.fit(trainX, trainy, epochs=epochs, batch_size=batch_size, validation_data=(testX, testy),
+    #                     callbacks=get_callbacks(), shuffle=True)
     result = model.evaluate(testX, testy, batch_size=batch_size)
     return history, result
 
 
 if __name__ == "__main__":
     print(modelName)
-    X_train, X_test, y_train, y_test = load_dataset_beginner(dataSet, className)
+    X_train, X_test, y_train, y_test,class_weights = load_dataset_beginner(dataSet, className)
 
     model = zuoyou_model()
     compile_model(model)
     # plot_model(model, to_file='./model.png')
 
-    history, result = train_model(model, X_train, y_train, X_test, y_test)
+    history, result = train_model(model, X_train, y_train, X_test, y_test,class_weights)
 
     saveName = modelName + str(round(result[1], 3)) + "_" + curTime + ".h5"
     model.save(os.path.join(modelPath, className, saveName))
