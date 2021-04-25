@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 
 dataSet = "./data"
 className = "PostionStablity"
-modelName = "./model\PostionStablity\初学者位置稳定性_Dense1_原数据剔除del训_不固定_0.885__20210425_07_10_29.h5"
+modelName = "./model\PostionStablity\初学者位置稳定性_Dense1_原train_不固定_0.769__20210425_07_22_16.h5"
 
 
 def plot_with_labels(lowDWeights, labels, list):
