@@ -7,7 +7,7 @@ from tensorflow.python.keras.utils.version_utils import callbacks
 
 from dataReader import load_dataset_beginner
 
-modelName="初学者位置稳定性_dense1_fine_tuning2_"
+modelName = "初学者位置稳定性_dense1_新数据_固定_不扩容_tuning_"
 
 epochs, batch_size = 200, 256
 dataSet = "./data"
@@ -15,7 +15,8 @@ className = "PostionStablity"
 logDir = "./logs"
 curTime = datetime.now().strftime("_%Y%m%d_%H_%M_%S")
 modelPath = "./model"
-preModel = "初学者位置稳定性_dense1_0.606__20210422_08_46_52.h5"
+preModel = "初学者位置稳定性_Dense1_新数据_固定_不扩容_0.577__20210425_05_55_54.h5"
+
 
 def get_callbacks():
     return [
@@ -30,21 +31,21 @@ def train_model(model, trainX, trainy, testX, testy, class_weights):
     result = model.evaluate(testX, testy, batch_size=batch_size)
     return history, result
 
+
 def compile_model(model):
     model.compile(loss='categorical_crossentropy', optimizer=Adam(1e-5), metrics=['acc'])
     model.summary()
 
-if __name__=="__main__":
 
+if __name__ == "__main__":
     model = load_model(os.path.join(modelPath, className, preModel))
     extractor = model.get_layer(index=70)
     extractor.summary()
     extractor.trainable = True
     compile_model(model)
 
-    X_train, X_test, y_train, y_test, class_weights = load_dataset_beginner(dataSet, className)
+    X_train, X_test, y_train, y_test, class_weights, _ = load_dataset_beginner(dataSet, className, augment=False)
     history, result = train_model(model, X_train, y_train, X_test, y_test, class_weights)
 
     saveName = modelName + str(round(result[1], 3)) + "_" + curTime + ".h5"
     model.save(os.path.join(modelPath, className, saveName))
-
