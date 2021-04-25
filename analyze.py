@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 
 dataSet = "./data"
 className = "PostionStablity"
-modelName = "./model\PostionStablity\初学者位置稳定性_Dense1_新train_扩容_不固定_batch小_固定epoch_0.5__20210425_10_30_01.h5"
+modelName = "./model\PostionStablity\初学者位置稳定性_dense1_不固定_0.636__20210422_12_36_58.h5"
 
 
 def plot_with_labels(lowDWeights, labels, list):
@@ -30,8 +30,7 @@ def plot_with_labels(lowDWeights, labels, list):
 
 if __name__ == "__main__":
 
-    X_train, X_test, y_train, y_test, class_weights, list = load_dataset_beginner(dataSet, className, augment=False,
-                                                                                  times=10)
+    X_train, X_test, y_train, y_test, class_weights, list = load_dataset_beginner(dataSet, className)
     model = load_model(modelName)
 
     for index, layer in enumerate(model.layers):

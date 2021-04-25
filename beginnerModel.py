@@ -18,7 +18,7 @@ from datetime import datetime
 modelName = "初学者位置稳定性_Dense1_新train_扩容_不固定_batch小_固定20epoch_"
 
 # os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
-epochs, batch_size = 20, 256
+epochs, batch_size = 25, 256
 dataSet = "./data"
 className = "PostionStablity"
 logDir = "./logs"
@@ -120,7 +120,7 @@ def train_model(model, trainX, trainy, testX, testy, class_weights):
 if __name__ == "__main__":
     print(modelName)
     X_train, X_test, y_train, y_test, class_weights, _ = load_dataset_beginner(dataSet, className, augment=True,
-                                                                               times=100)
+                                                                               times=150)
 
     model = zuoyou_model()
     compile_model(model)
