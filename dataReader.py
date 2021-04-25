@@ -233,7 +233,7 @@ def load_dataset2(dirname, classname, scores=[1, 3, 5]):
     return X_train, X_test, y_train, y_test, class_weights
 
 
-def load_dataset_beginner(dirname, classname, pklPath="./data/pkl"):
+def load_dataset_beginner(dirname, classname, pklPath="./data/pkl", augment=False):
     X_train = [[] for _ in range(70)]
     y_train = []
     y2 = []
@@ -251,23 +251,23 @@ def load_dataset_beginner(dirname, classname, pklPath="./data/pkl"):
     for file in trainList:
         data = load_file(os.path.join(dirname, classname, "train", file))
         circleList = to_circleList_beginner(data)
-        circleList = process_circleList(circleList)
-        for i, circle in enumerate(circleList):
-            X_train[i].append(circle)
+        if not augment:
+            circleList = process_circleList(circleList)
+            for i, circle in enumerate(circleList):
+                X_train[i].append(circle)
+            y_train.append(encoded[scores.index(process_label(int(index_2_label[int(file.split(".")[0])])))])
+            y2.append(process_label(int(index_2_label[int(file.split(".")[0])])))
+        else:
+            # 在线扩容
+            for i in range(0, 200):
+                if i != 0:
+                    random.shuffle(circleList)
+                list = process_circleList(circleList)
+                for i, circle in enumerate(list):
+                    X_train[i].append(circle.copy())
 
-        # 在线扩容
-        # for i in range(0, 200):
-        #     if i != 0:
-        #         random.shuffle(circleList)
-        #     list = process_circleList(circleList)
-        #     for i, circle in enumerate(list):
-        #         X_train[i].append(circle.copy())
-        #
-        #     y_train.append(encoded[scores.index(process_label(int(index_2_label[int(file.split(".")[0])])))])
-        #     y2.append(process_label(int(index_2_label[int(file.split(".")[0])])))
-
-        y_train.append(encoded[scores.index(process_label(int(index_2_label[int(file.split(".")[0])])))])
-        y2.append(process_label(int(index_2_label[int(file.split(".")[0])])))
+                y_train.append(encoded[scores.index(process_label(int(index_2_label[int(file.split(".")[0])])))])
+                y2.append(process_label(int(index_2_label[int(file.split(".")[0])])))
 
     # 计算class_weights
     class_weights_array = class_weight.compute_class_weight('balanced', np.unique(scores), np.asarray(y2))
@@ -304,7 +304,7 @@ def load_dataset_beginner(dirname, classname, pklPath="./data/pkl"):
         X_test[i] = np.array(x)
     y_test = to_categorical(np.array(y_test))  # one-hot编码
 
-    return X_train, X_test, y_train, y_test, class_weights
+    return X_train, X_test, y_train, y_test, class_weights, trainList + testList
 
 
 def load_dataset_beginner_reg(dirname, classname, pklPath="./data/pkl"):
@@ -385,7 +385,7 @@ def load_dataset_beginner_reg(dirname, classname, pklPath="./data/pkl"):
 
 if __name__ == '__main__':
     # X_train, X_test, y_train, y_test, class_weight = load_dataset2("./data", "shouwan")
-    X_train, X_test, y_train, y_test,class_weights = load_dataset_beginner("./data", "PostionStablity")
+    X_train, X_test, y_train, y_test, class_weights = load_dataset_beginner("./data", "PostionStablity")
     # print(X_train.shape)
     # print(X_test.shape)
     print(len(X_train))

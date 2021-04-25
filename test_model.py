@@ -12,13 +12,18 @@ className = "PostionStablity"
 
 def test_classification(model):
     # X_train, X_test, y_train, y_test, _ = load_dataset2("./data", className)
-    X_train, X_test, y_train, y_test, _ = load_dataset_beginner("./data", className)
+    X_train, X_test, y_train, y_test, _, list = load_dataset_beginner("./data", className)
 
     model.evaluate(X_test, y_test)
 
     y_pred = model.predict(X_test)
     y_pred = y_pred.argmax(axis=1)
     y_test = y_test.argmax(axis=1)
+
+    y_true = y_train.argmax(axis=1)
+
+    for y, index in zip(y_true.tolist()+y_pred.tolist(), list):
+        print(y, index)
 
     print(classification_report(y_test, y_pred))
 
