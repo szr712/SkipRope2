@@ -13,12 +13,12 @@ modelName = "./model/PostionStablity/初学者位置稳定性_dense1_不固定_0
 def plot_with_labels(lowDWeights, labels, list):
     X, Y = lowDWeights[:, 0], lowDWeights[:, 1]
     i = 0
-    for x, y, s, t in zip(X, Y, labels, list):
+    for x, y, s in zip(X, Y, labels):
         c = cm.rainbow(int(255 / 6 * s))  # 为了使得颜色有区分度，把0-255颜色区间分为9分,然后把标签映射到一个区间
-        if i<=66:
-            plt.text(x, y, t.split(".")[0]+"x", backgroundcolor=c, fontsize=9)
+        if i <= 13400:
+            plt.text(x, y, "x", backgroundcolor=c, fontsize=9)
         else:
-            plt.text(x, y, t.split(".")[0] + "t", backgroundcolor=c, fontsize=9)
+            plt.text(x, y, "t", backgroundcolor=c, fontsize=9)
         i += 1
     plt.xlim(X.min(), X.max())
     plt.ylim(Y.min(), Y.max())
@@ -28,7 +28,7 @@ def plot_with_labels(lowDWeights, labels, list):
 
 if __name__ == "__main__":
 
-    X_train, X_test, y_train, y_test, class_weights, list = load_dataset_beginner(dataSet, className)
+    X_train, X_test, y_train, y_test, class_weights, list = load_dataset_beginner(dataSet, className, augment=True)
     model = load_model(modelName)
 
     for index, layer in enumerate(model.layers):
@@ -51,4 +51,4 @@ if __name__ == "__main__":
 
     low_dim_embs = tsne.fit_transform(pred)
 
-    plot_with_labels(low_dim_embs, lable,list)
+    plot_with_labels(low_dim_embs, lable, list)

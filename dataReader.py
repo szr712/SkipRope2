@@ -385,7 +385,7 @@ def load_dataset_beginner_reg(dirname, classname, pklPath="./data/pkl"):
 
 if __name__ == '__main__':
     # X_train, X_test, y_train, y_test, class_weight = load_dataset2("./data", "shouwan")
-    X_train, X_test, y_train, y_test, class_weights = load_dataset_beginner("./data", "PostionStablity")
+    X_train, X_test, y_train, y_test, class_weights,_ = load_dataset_beginner("./data", "PostionStablity",augment=True)
     # print(X_train.shape)
     # print(X_test.shape)
     print(len(X_train))
