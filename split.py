@@ -9,7 +9,7 @@ srcPath = "all"
 
 fileList = os.listdir(os.path.join(dataSet, className, srcPath))
 
-trainList, testList = train_test_split(fileList, test_size=0.33)
+trainList, testList = train_test_split(fileList, test_size=0.2)
 
 for file in trainList:
     shutil.copy(os.path.join(dataSet, className, srcPath, file), os.path.join(dataSet, className, "train", file))
