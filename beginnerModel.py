@@ -15,7 +15,7 @@ from tensorflow.python.keras.utils.vis_utils import plot_model
 from dataReader import padding, load_dataset_beginner, load_dataset_beginner_reg
 from datetime import datetime
 
-modelName = "初学者位置稳定性_Dense1_原train_扩容_不固定_batch小_"
+modelName = "初学者位置稳定性_Dense1_新train_扩容_不固定_batch小_"
 
 # os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 epochs, batch_size = 200, 256
