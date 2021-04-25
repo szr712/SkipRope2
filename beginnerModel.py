@@ -15,7 +15,7 @@ from tensorflow.python.keras.utils.vis_utils import plot_model
 from dataReader import padding, load_dataset_beginner, load_dataset_beginner_reg
 from datetime import datetime
 
-modelName = "初学者位置稳定性_Dense1_小扩容_不固定_"
+modelName = "初学者位置稳定性_Dense1_新数据_不固定_不扩容_"
 
 # os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 epochs, batch_size = 200, 512
@@ -117,7 +117,7 @@ def train_model(model, trainX, trainy, testX, testy, class_weights):
 
 if __name__ == "__main__":
     print(modelName)
-    X_train, X_test, y_train, y_test, class_weights,_ = load_dataset_beginner(dataSet, className,augment=True,times=10)
+    X_train, X_test, y_train, y_test, class_weights,_ = load_dataset_beginner(dataSet, className)
 
     model = zuoyou_model()
     compile_model(model)
