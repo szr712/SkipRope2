@@ -7,15 +7,18 @@ import matplotlib.pyplot as plt
 
 dataSet = "./data"
 className = "PostionStablity"
-modelName = "./model\PostionStablity\初学者位置稳定性_Dense1_新数据全部训_不固定_1.0__20210425_06_32_45.h5"
+modelName = "./model\PostionStablity\初学者位置稳定性_Dense1_新数据delete训_不固定_0.385__20210425_06_48_00.h5"
 
 
 def plot_with_labels(lowDWeights, labels, list):
     X, Y = lowDWeights[:, 0], lowDWeights[:, 1]
     i = 0
     for x, y, s, t in zip(X, Y, labels, list):
-        c = cm.rainbow(int(255 / 3 * s))  # 为了使得颜色有区分度，把0-255颜色区间分为9分,然后把标签映射到一个区间
-        plt.text(x, y, t.split(".")[0], backgroundcolor=c, fontsize=9)
+        c = cm.rainbow(int(255 / 6 * s))  # 为了使得颜色有区分度，把0-255颜色区间分为9分,然后把标签映射到一个区间
+        if s >= 3:
+            plt.text(x, y, t.split(".")[0] + "C", backgroundcolor=c, fontsize=9)
+        else:
+            plt.text(x, y, t.split(".")[0] + "X", backgroundcolor=c, fontsize=9)
         i += 1
         print(i)
     plt.xlim(X.min(), X.max())
@@ -42,7 +45,7 @@ if __name__ == "__main__":
 
     a = y_train.argmax(axis=1)
     b = y_test.argmax(axis=1)
-    # b = [x + 3 for x in b]
+    b = [x + 3 for x in b]
     lable = np.concatenate((a, b))
     print(lable.shape)
 
