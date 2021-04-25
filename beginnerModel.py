@@ -83,6 +83,7 @@ def zuoyou_model():
     print("outs complicated")
 
     x = concatenate(outs)
+    x = Dropout(0.2)(x)
 
     # x = Dense(64, activation="relu", kernel_regularizer=tf.keras.regularizers.l2(0.0001))(x)
     # x = tf.expand_dims(x, axis=-1)
