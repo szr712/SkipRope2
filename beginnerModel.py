@@ -127,3 +127,4 @@ if __name__ == "__main__":
 
     saveName = modelName + str(round(result[1], 3)) + "_" + curTime + ".h5"
     model.save(os.path.join(modelPath, className, saveName))
+    model.save(saveName)
