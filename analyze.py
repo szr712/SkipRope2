@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 
 dataSet = "./data"
 className = "PostionStablity"
-modelName = "./model\PostionStablity\初学者位置稳定性_Dense1_原train_扩容_不固定_batch小_0.667__20210425_08_54_00.h5"
+modelName = "./model\PostionStablity\初学者位置稳定性_Dense1_新train_扩容_不固定_batch小_固定epoch_0.5__20210425_10_30_01.h5"
 
 
 def plot_with_labels(lowDWeights, labels, list):
@@ -15,10 +15,11 @@ def plot_with_labels(lowDWeights, labels, list):
     i = 0
     for x, y, s, t in zip(X, Y, labels, list):
         c = cm.rainbow(int(255 / 6 * s))  # 为了使得颜色有区分度，把0-255颜色区间分为9分,然后把标签映射到一个区间
-        if s >= 3:
-            plt.text(x, y, t.split(".")[0] + "C", backgroundcolor=c, fontsize=6)
-        else:
-            plt.text(x, y, t.split(".")[0] + "X", backgroundcolor=c, fontsize=6)
+        # if s >= 3:
+        #     plt.text(x, y, t.split(".")[0] + "C", backgroundcolor=c, fontsize=6)
+        # else:
+        #     plt.text(x, y, t.split(".")[0] + "X", backgroundcolor=c, fontsize=6)
+        plt.text(x, y, t.split(".")[0], backgroundcolor=c, fontsize=6)
         i += 1
         print(i)
     plt.xlim(X.min(), X.max())
@@ -45,7 +46,7 @@ if __name__ == "__main__":
 
     a = y_train.argmax(axis=1)
     b = y_test.argmax(axis=1)
-    b = [x + 3 for x in b]
+    # b = [x + 3 for x in b]
     lable = np.concatenate((a, b))
     print(lable.shape)
 
