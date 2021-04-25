@@ -233,7 +233,7 @@ def load_dataset2(dirname, classname, scores=[1, 3, 5]):
     return X_train, X_test, y_train, y_test, class_weights
 
 
-def load_dataset_beginner(dirname, classname, pklPath="./data/pkl", augment=False):
+def load_dataset_beginner(dirname, classname, pklPath="./data/pkl", augment=False,times=200):
     X_train = [[] for _ in range(70)]
     y_train = []
     y2 = []
@@ -259,7 +259,7 @@ def load_dataset_beginner(dirname, classname, pklPath="./data/pkl", augment=Fals
             y2.append(process_label(int(index_2_label[int(file.split(".")[0])])))
         else:
             # 在线扩容
-            for i in range(0, 200):
+            for i in range(0, times):
                 if i != 0:
                     random.shuffle(circleList)
                 list = process_circleList(circleList)

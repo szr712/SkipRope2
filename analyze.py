@@ -7,19 +7,17 @@ import matplotlib.pyplot as plt
 
 dataSet = "./data"
 className = "PostionStablity"
-modelName = "./model/PostionStablity/初学者位置稳定性_dense1_不固定_0.636__20210422_12_36_58.h5"
+modelName = "./model\PostionStablity\初学者位置稳定性_Dense1_扩容_不固定_0.111__20210425_02_47_26.h5"
 
 
 def plot_with_labels(lowDWeights, labels, list):
     X, Y = lowDWeights[:, 0], lowDWeights[:, 1]
     i = 0
-    for x, y, s in zip(X, Y, labels):
+    for x, y, s, t in zip(X, Y, labels, list):
         c = cm.rainbow(int(255 / 6 * s))  # 为了使得颜色有区分度，把0-255颜色区间分为9分,然后把标签映射到一个区间
-        if i <= 13400:
-            plt.text(x, y, "x", backgroundcolor=c, fontsize=9)
-        else:
-            plt.text(x, y, "t", backgroundcolor=c, fontsize=9)
+        plt.text(x, y, t.split(".")[0], backgroundcolor=c, fontsize=9)
         i += 1
+        print(i)
     plt.xlim(X.min(), X.max())
     plt.ylim(Y.min(), Y.max())
     plt.title('Visualize last layer')
@@ -28,7 +26,8 @@ def plot_with_labels(lowDWeights, labels, list):
 
 if __name__ == "__main__":
 
-    X_train, X_test, y_train, y_test, class_weights, list = load_dataset_beginner(dataSet, className, augment=True)
+    X_train, X_test, y_train, y_test, class_weights, list = load_dataset_beginner(dataSet, className, augment=False,
+                                                                                  times=10)
     model = load_model(modelName)
 
     for index, layer in enumerate(model.layers):
