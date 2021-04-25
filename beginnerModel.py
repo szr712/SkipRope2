@@ -15,7 +15,7 @@ from tensorflow.python.keras.utils.vis_utils import plot_model
 from dataReader import padding, load_dataset_beginner, load_dataset_beginner_reg
 from datetime import datetime
 
-modelName = "初学者位置稳定性_Dense1_新数据_不固定_不扩容_"
+modelName = "初学者位置稳定性_Dense1_新数据_不固定_不扩容_取消回滚_"
 
 # os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 epochs, batch_size = 200, 512
@@ -54,7 +54,8 @@ def circle_model():
 
 def get_callbacks():
     return [
-        callbacks.EarlyStopping(monitor='val_loss', patience=20, restore_best_weights=True),  # 就是需要对验证集的loss监听
+        # callbacks.EarlyStopping(monitor='val_loss', patience=20, restore_best_weights=True),  # 就是需要对验证集的loss监听
+        callbacks.EarlyStopping(monitor='val_loss', patience=20),
         callbacks.TensorBoard(log_dir=os.path.join(logDir, className, modelName + curTime)),
     ]
 
