@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 
 dataSet = "./data"
 className = "PostionStablity"
-modelName = "./model\PostionStablity\初学者位置稳定性_Dense1_原train_不固定_0.769__20210425_07_22_16.h5"
+modelName = "./model\PostionStablity\初学者位置稳定性_dense1_不固定_0.636__20210422_12_36_58.h5"
 
 
 def plot_with_labels(lowDWeights, labels, list):
@@ -16,9 +16,9 @@ def plot_with_labels(lowDWeights, labels, list):
     for x, y, s, t in zip(X, Y, labels, list):
         c = cm.rainbow(int(255 / 6 * s))  # 为了使得颜色有区分度，把0-255颜色区间分为9分,然后把标签映射到一个区间
         if s >= 3:
-            plt.text(x, y, t.split(".")[0] + "C", backgroundcolor=c, fontsize=9)
+            plt.text(x, y, t.split(".")[0] + "C", backgroundcolor=c, fontsize=6)
         else:
-            plt.text(x, y, t.split(".")[0] + "X", backgroundcolor=c, fontsize=9)
+            plt.text(x, y, t.split(".")[0] + "X", backgroundcolor=c, fontsize=6)
         i += 1
         print(i)
     plt.xlim(X.min(), X.max())
