@@ -1,13 +1,15 @@
 import os
 
+import pickle
 from sklearn.metrics import classification_report
 from tensorflow.python.keras.models import load_model
 
 from dataReader import load_dataset2, load_dataset_beginner
 
-modelName = "初学者位置稳定性_dense1_不固定_0.636__20210422_12_36_58.h5"
+modelName = "初学者位置稳定性_Dense1_新train_扩容_不固定_调整label_0.625__20210425_11_49_21.h5"
 modelPath = "./model"
 className = "PostionStablity"
+pklPath="./data/pkl"
 
 
 def test_classification(model):
@@ -20,10 +22,13 @@ def test_classification(model):
     y_pred = y_pred.argmax(axis=1)
     y_test = y_test.argmax(axis=1)
 
-    y_true = y_train.argmax(axis=1)
+    y_true = model.predict(X_train).argmax(axis=1)
+
+    with open(os.path.join(pklPath, "index_2_" + className + ".pkl"), 'rb') as f:
+        index_2_label = pickle.load(f, encoding='bytes')
 
     for y, index in zip(y_true.tolist()+y_pred.tolist(), list):
-        print(y, index)
+        print(y, index,index_2_label[int(index.split(".")[0])])
 
     print(classification_report(y_test, y_pred))
 
