@@ -5,7 +5,7 @@ from tensorflow.keras.layers import Dense, Dropout
 from tensorflow.keras.layers import LSTM
 import tensorflow as tf
 from tensorflow.python.keras import Input
-from tensorflow.python.keras.layers import concatenate
+from tensorflow.python.keras.layers import concatenate, add
 from tensorflow.python.keras.models import Model, load_model
 from tensorflow.python.keras.optimizer_v2.adam import Adam
 from tensorflow.python.keras.optimizer_v2.rmsprop import RMSprop
@@ -15,7 +15,7 @@ from tensorflow.python.keras.utils.vis_utils import plot_model
 from dataReader import padding, load_dataset_beginner, load_dataset_beginner_reg
 from datetime import datetime
 
-modelName = "初学者动作标准度_Dense1_正常数据集_扩容_不固定_"
+modelName = "初学者动作标准度_Dense1_add_正常数据集_扩容_不固定_"
 
 # os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 epochs, batch_size = 200, 16
@@ -130,7 +130,7 @@ def rope_model():
     for input in inputs:
         x1 = feature1(input)
         x2 = feature2(input)
-        out = concatenate([x1, x2])
+        out = add([x1, x2])
         outs.append(out)
     print("outs complicated")
 
