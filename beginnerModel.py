@@ -18,7 +18,7 @@ from datetime import datetime
 modelName = "初学者动作标准度_Dense1_正常数据集_扩容_不固定_"
 
 # os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
-epochs, batch_size = 200, 32
+epochs, batch_size = 200, 16
 dataSet = "./data"
 className = "RopeSwinging"
 logDir = "./logs"
@@ -134,7 +134,7 @@ def rope_model():
         outs.append(out)
     print("outs complicated")
 
-    x = concatenate(outs,axis=1)
+    x = concatenate(outs, axis=1)
     x = Dropout(0.2)(x)
 
     # x = Dense(64, activation="relu", kernel_regularizer=tf.keras.regularizers.l2(0.0001))(x)
@@ -171,7 +171,8 @@ def train_model(model, trainX, trainy, testX, testy, class_weights):
 
 if __name__ == "__main__":
     print(modelName)
-    X_train, X_test, y_train, y_test, class_weights, _ = load_dataset_beginner(dataSet, className,augment=True,times=150)
+    X_train, X_test, y_train, y_test, class_weights, _ = load_dataset_beginner(dataSet, className, augment=True,
+                                                                               times=150)
     model = rope_model()
     model.summary()
     # model = postion_model()
