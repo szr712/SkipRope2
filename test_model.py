@@ -1,15 +1,18 @@
 import os
 
 import pickle
-from sklearn.metrics import classification_report
+from sklearn.metrics import classification_report, confusion_matrix
 from tensorflow.python.keras.models import load_model
 
 from dataReader import load_dataset2, load_dataset_beginner
+import pandas as pd
+import seaborn as sns
 
-modelName = "初学者位置稳定性_Dense1_重新划分整体的数据集_扩容_不固定_0.667__20210428_02_07_45.h5"
+
+modelName = "初学者位置稳定性_Dense1_训练部分包含70测试_扩容_不固定_0.941__20210428_05_48_37.h5"
 modelPath = "./model"
 className = "PostionStablity"
-pklPath="./data/pkl"
+pklPath = "./data/pkl"
 
 
 def test_classification(model):
@@ -27,10 +30,14 @@ def test_classification(model):
     with open(os.path.join(pklPath, "index_2_" + className + ".pkl"), 'rb') as f:
         index_2_label = pickle.load(f, encoding='bytes')
 
-    for y, index in zip(y_true.tolist()+y_pred.tolist(), list):
-        print(y, index,index_2_label[int(index.split(".")[0])])
+    for y, index in zip(y_true.tolist() + y_pred.tolist(), list):
+        print(y, index, index_2_label[int(index.split(".")[0])])
 
     print(classification_report(y_test, y_pred))
+
+    C = confusion_matrix(y_true, y_pred, labels=["1", "3", "5"])
+    df = pd.DataFrame(C, index=["1", "3", "5"], columns=["1", "3", "5"])
+    sns.heatmap(df, annot=True)
 
 
 if __name__ == "__main__":
