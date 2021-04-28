@@ -18,7 +18,7 @@ from datetime import datetime
 modelName = "初学者动作标准度_Dense1_正常数据集_扩容_不固定_"
 
 # os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
-epochs, batch_size = 200, 64
+epochs, batch_size = 200, 32
 dataSet = "./data"
 className = "RopeSwinging"
 logDir = "./logs"
