@@ -15,7 +15,7 @@ from tensorflow.python.keras.utils.vis_utils import plot_model
 from dataReader import padding, load_dataset_beginner, load_dataset_beginner_reg
 from datetime import datetime
 
-modelName = "初学者位置稳定性_Dense1_训练部分包含80测试_扩容_不固定_"
+modelName = "初学者位置稳定性_Dense1_训练部分包含70测试_扩容_不固定_"
 
 # os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 epochs, batch_size = 200, 256
@@ -24,7 +24,9 @@ className = "PostionStablity"
 logDir = "./logs"
 curTime = datetime.now().strftime("_%Y%m%d_%H_%M_%S")
 modelPath = "./model"
-extractor = "zuoyou/左右得分_class_weight_0.997__20210419_19_16_24.h5"
+zuoyou = "zuoyou/左右得分_class_weight_0.997__20210419_19_16_24.h5"
+shoubi = "shoubi/手臂得分_class_weight_0.974__20210419_20_14_55.h5"
+shouwan = "shouwan/手腕得分_class_weight_0.969__20210419_20_13_17.h5"
 
 
 def to_circleList(data):
@@ -43,9 +45,27 @@ def to_circleList(data):
     return circleList
 
 
-def circle_model():
-    model = load_model(os.path.join(modelPath, extractor))
-    model = Model(inputs=model.input, outputs=model.layers[1].output, name="circle_model")
+def zuoyou_model():
+    model = load_model(os.path.join(modelPath, zuoyou))
+    model = Model(inputs=model.input, outputs=model.layers[1].output, name="zuoyou_model")
+    # model = Sequential(name="circle_model")
+    # model.add(LSTM(64, input_shape=(30, 9), return_sequences=True, kernel_regularizer=tf.keras.regularizers.l2(0.0001)))
+    # model.add(LSTM(64, kernel_regularizer=tf.keras.regularizers.l2(0.0001)))
+    return model
+
+
+def shoubi_model():
+    model = load_model(os.path.join(modelPath, shoubi))
+    model = Model(inputs=model.input, outputs=model.layers[1].output, name="shoubi_model")
+    # model = Sequential(name="circle_model")
+    # model.add(LSTM(64, input_shape=(30, 9), return_sequences=True, kernel_regularizer=tf.keras.regularizers.l2(0.0001)))
+    # model.add(LSTM(64, kernel_regularizer=tf.keras.regularizers.l2(0.0001)))
+    return model
+
+
+def shouwan_model():
+    model = load_model(os.path.join(modelPath, shouwan))
+    model = Model(inputs=model.input, outputs=model.layers[1].output, name="shouwan_model")
     # model = Sequential(name="circle_model")
     # model.add(LSTM(64, input_shape=(30, 9), return_sequences=True, kernel_regularizer=tf.keras.regularizers.l2(0.0001)))
     # model.add(LSTM(64, kernel_regularizer=tf.keras.regularizers.l2(0.0001)))
@@ -67,13 +87,13 @@ def my_loss_fn(y_true, y_pred):
     return tf.reduce_mean(filter * tf.square(y_pred - y_true), axis=-1)
 
 
-def zuoyou_model():
+def postion_model():
     inputs = []
     for i in range(0, 70):
         inputs.append(Input(shape=(30, 9)))
     print("inputs complicated")
 
-    feature = circle_model()
+    feature = zuoyou_model()
     # feature.trainable = False
 
     outs = []
@@ -83,6 +103,39 @@ def zuoyou_model():
     print("outs complicated")
 
     x = concatenate(outs)
+    x = Dropout(0.2)(x)
+
+    # x = Dense(64, activation="relu", kernel_regularizer=tf.keras.regularizers.l2(0.0001))(x)
+    # x = tf.expand_dims(x, axis=-1)
+    # x = LSTM(64, kernel_regularizer=tf.keras.regularizers.l2(0.0001))(x)
+    # x = LSTM(96, kernel_regularizer=tf.keras.regularizers.l2(0.0001))(x)
+    out = Dense(3, activation='softmax')(x)
+    # out = Dense(1)(x)
+    model = Model(inputs, out)
+    return model
+
+
+def rope_model():
+    inputs = []
+    for i in range(0, 70):
+        inputs.append(Input(shape=(30, 9)))
+    print("inputs complicated")
+
+    feature1 = shoubi_model()
+    feature2 = shouwan_model()
+    # feature.trainable = False
+
+    outs = []
+
+    for input in inputs:
+        x1 = feature1(input)
+        x2 = feature2(input)
+        out = concatenate([x1, x2])
+        outs.append(out)
+    print("outs complicated")
+    ##### 测试一下标准度
+
+    x = concatenate(outs,axis=1)
     x = Dropout(0.2)(x)
 
     # x = Dense(64, activation="relu", kernel_regularizer=tf.keras.regularizers.l2(0.0001))(x)
@@ -121,8 +174,9 @@ if __name__ == "__main__":
     print(modelName)
     X_train, X_test, y_train, y_test, class_weights, _ = load_dataset_beginner(dataSet, className, augment=True,
                                                                                times=150)
-
-    model = zuoyou_model()
+    # model = rope_model()
+    # model.summary()
+    model = postion_model()
     compile_model(model)
     # plot_model(model, to_file='./model.png')
 
@@ -130,4 +184,4 @@ if __name__ == "__main__":
 
     saveName = modelName + str(round(result[1], 3)) + "_" + curTime + ".h5"
     model.save(os.path.join(modelPath, className, saveName))
-    # model.save(saveName)
+    model.save(saveName)
