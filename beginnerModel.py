@@ -15,12 +15,12 @@ from tensorflow.python.keras.utils.vis_utils import plot_model
 from dataReader import padding, load_dataset_beginner, load_dataset_beginner_reg
 from datetime import datetime
 
-modelName = "初学者位置稳定性_Dense1_训练部分包含70测试_扩容_不固定_"
+modelName = "初学者位动作标准度_Dense1_正常数据集_扩容_不固定_"
 
 # os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 epochs, batch_size = 200, 256
 dataSet = "./data"
-className = "PostionStablity"
+className = "RopeSwinging"
 logDir = "./logs"
 curTime = datetime.now().strftime("_%Y%m%d_%H_%M_%S")
 modelPath = "./model"
@@ -133,7 +133,6 @@ def rope_model():
         out = concatenate([x1, x2])
         outs.append(out)
     print("outs complicated")
-    ##### 测试一下标准度
 
     x = concatenate(outs,axis=1)
     x = Dropout(0.2)(x)
@@ -174,11 +173,11 @@ if __name__ == "__main__":
     print(modelName)
     X_train, X_test, y_train, y_test, class_weights, _ = load_dataset_beginner(dataSet, className, augment=True,
                                                                                times=150)
-    # model = rope_model()
-    # model.summary()
-    model = postion_model()
+    model = rope_model()
+    model.summary()
+    # model = postion_model()
     compile_model(model)
-    # plot_model(model, to_file='./model.png')
+    # plot_model(model, to_file='./model2.png')
 
     history, result = train_model(model, X_train, y_train, X_test, y_test, class_weights)
 
