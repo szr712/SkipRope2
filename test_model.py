@@ -35,9 +35,9 @@ def test_classification(model):
 
     print(classification_report(y_test, y_pred))
 
-    C = confusion_matrix(y_true, y_pred, labels=["1", "3", "5"])
-    df = pd.DataFrame(C, index=["1", "3", "5"], columns=["1", "3", "5"])
-    sns.heatmap(df, annot=True)
+    # C = confusion_matrix(y_test, y_pred, labels=["1", "3", "5"])
+    # df = pd.DataFrame(C, index=["1", "3", "5"], columns=["1", "3", "5"])
+    # sns.heatmap(df, annot=True)
 
 
 if __name__ == "__main__":
