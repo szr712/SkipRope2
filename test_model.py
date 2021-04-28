@@ -6,7 +6,7 @@ from tensorflow.python.keras.models import load_model
 
 from dataReader import load_dataset2, load_dataset_beginner
 
-modelName = "初学者位置稳定性_Dense1_新train_扩容_不固定_调整label_0.625__20210425_11_49_21.h5"
+modelName = "初学者位置稳定性_Dense1_新train_扩容_不固定_手动选择train—test_0.438__20210426_11_43_08.h5"
 modelPath = "./model"
 className = "PostionStablity"
 pklPath="./data/pkl"

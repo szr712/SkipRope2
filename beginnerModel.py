@@ -15,10 +15,10 @@ from tensorflow.python.keras.utils.vis_utils import plot_model
 from dataReader import padding, load_dataset_beginner, load_dataset_beginner_reg
 from datetime import datetime
 
-modelName = "初学者位置稳定性_Dense1_新train_扩容_不固定_手动选择train—test_"
+modelName = "初学者位置稳定性_Dense1_重新划分整体的数据集_扩容_不固定_"
 
 # os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
-epochs, batch_size = 7, 256
+epochs, batch_size = 200, 256
 dataSet = "./data"
 className = "PostionStablity"
 logDir = "./logs"
@@ -54,7 +54,7 @@ def circle_model():
 
 def get_callbacks():
     return [
-        # callbacks.EarlyStopping(monitor='val_acc', patience=20, restore_best_weights=True),  # 就是需要对验证集的loss监听
+        callbacks.EarlyStopping(monitor='val_acc', patience=20, restore_best_weights=True),  # 就是需要对验证集的loss监听
         # callbacks.EarlyStopping(monitor='val_loss', patience=20),
         callbacks.TensorBoard(log_dir=os.path.join(logDir, className, modelName + curTime)),
     ]
