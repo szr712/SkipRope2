@@ -15,12 +15,12 @@ from tensorflow.python.keras.utils.vis_utils import plot_model
 from dataReader import padding, load_dataset_beginner, load_dataset_beginner_reg
 from datetime import datetime
 
-modelName = "初学者位置稳定性_Dense1_有扩容_无finetuning_"
+modelName = "初学者动作标准度_Dense1_无扩容_有finetuning_"
 
 # os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 epochs, batch_size = 200, 256
 dataSet = "./data"
-className = "PostionStablity"
+className = "RopeSwinging"
 logDir = "./logs"
 curTime = datetime.now().strftime("_%Y%m%d_%H_%M_%S")
 modelPath = "./model"
@@ -46,11 +46,11 @@ def to_circleList(data):
 
 
 def zuoyou_model():
-    # model = load_model(os.path.join(modelPath, zuoyou))
-    # model = Model(inputs=model.input, outputs=model.layers[1].output, name="zuoyou_model")
-    model = Sequential(name="zuoyou_model")
-    model.add(LSTM(64, input_shape=(30, 9), return_sequences=True, kernel_regularizer=tf.keras.regularizers.l2(0.0001)))
-    model.add(LSTM(64, kernel_regularizer=tf.keras.regularizers.l2(0.0001)))
+    model = load_model(os.path.join(modelPath, zuoyou))
+    model = Model(inputs=model.input, outputs=model.layers[1].output, name="zuoyou_model")
+    # model = Sequential(name="zuoyou_model")
+    # model.add(LSTM(64, input_shape=(30, 9), return_sequences=True, kernel_regularizer=tf.keras.regularizers.l2(0.0001)))
+    # model.add(LSTM(64, kernel_regularizer=tf.keras.regularizers.l2(0.0001)))
     return model
 
 
@@ -171,9 +171,8 @@ def train_model(model, trainX, trainy, testX, testy, class_weights):
 
 if __name__ == "__main__":
     print(modelName)
-    X_train, X_test, y_train, y_test, class_weights, _ = load_dataset_beginner(dataSet, className, augment=True,
-                                                                               times=150)
-    model = postion_model()
+    X_train, X_test, y_train, y_test, class_weights, _ = load_dataset_beginner(dataSet, className)
+    model = rope_model()
     model.summary()
     # model = postion_model()
     compile_model(model)
