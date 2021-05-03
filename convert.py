@@ -1,10 +1,16 @@
 import tensorflow as tf
-from tensorflow.python.keras.models import load_model
+from tensorflow.python.keras.models import load_model, Model
 import os
 
 modelName = "初学者位置稳定性_Dense1_训练部分包含70测试_扩容_不固定_0.941__20210428_05_48_37.h5"
 modelPath = "./model"
 className = "PostionStablity"
+
+
+def rename_input(model):
+    for layer, i in zip(model.layers, range(1, 71)):
+        layer._name = "my_input_"+str(i)
+
 
 def convert_to_tflite_model(model, save_file_path, conversion_mode="normal"):
     """
@@ -34,9 +40,16 @@ def convert_to_tflite_model(model, save_file_path, conversion_mode="normal"):
     tflite_model = converter.convert()
     open(save_file_path, "wb").write(tflite_model)
 
-if __name__=="__main__":
+
+if __name__ == "__main__":
     model = load_model(os.path.join(modelPath, className, modelName))
     model.summary()
+
+    rename_input(model)
+
+    # for index, layer in enumerate(model.layers):
+    #     print(index)
+    #     print(layer)
 
     convert_to_tflite_model(model,'postion_model_fp16.tflite',conversion_mode="fp16_quantization")
 
