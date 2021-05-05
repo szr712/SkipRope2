@@ -15,7 +15,7 @@ from tensorflow.python.keras.utils.vis_utils import plot_model
 from dataReader import padding, load_dataset_beginner, load_dataset_beginner_reg
 from datetime import datetime
 
-modelName = "初学者动作标准度_Dense1_无扩容_有finetuning_"
+modelName = "初学者动作标准度_Dense1_无扩容_无finetuning_"
 
 # os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 epochs, batch_size = 200, 256
@@ -55,20 +55,20 @@ def zuoyou_model():
 
 
 def shoubi_model():
-    model = load_model(os.path.join(modelPath, shoubi))
-    model = Model(inputs=model.input, outputs=model.layers[1].output, name="shoubi_model")
-    # model = Sequential(name="circle_model")
-    # model.add(LSTM(64, input_shape=(30, 9), return_sequences=True, kernel_regularizer=tf.keras.regularizers.l2(0.0001)))
-    # model.add(LSTM(64, kernel_regularizer=tf.keras.regularizers.l2(0.0001)))
+    # model = load_model(os.path.join(modelPath, shoubi))
+    # model = Model(inputs=model.input, outputs=model.layers[1].output, name="shoubi_model")
+    model = Sequential(name="circle_model")
+    model.add(LSTM(64, input_shape=(30, 9), return_sequences=True, kernel_regularizer=tf.keras.regularizers.l2(0.0001)))
+    model.add(LSTM(64, kernel_regularizer=tf.keras.regularizers.l2(0.0001)))
     return model
 
 
 def shouwan_model():
-    model = load_model(os.path.join(modelPath, shouwan))
-    model = Model(inputs=model.input, outputs=model.layers[1].output, name="shouwan_model")
-    # model = Sequential(name="circle_model")
-    # model.add(LSTM(64, input_shape=(30, 9), return_sequences=True, kernel_regularizer=tf.keras.regularizers.l2(0.0001)))
-    # model.add(LSTM(64, kernel_regularizer=tf.keras.regularizers.l2(0.0001)))
+    # model = load_model(os.path.join(modelPath, shouwan))
+    # model = Model(inputs=model.input, outputs=model.layers[1].output, name="shouwan_model")
+    model = Sequential(name="circle_model")
+    model.add(LSTM(64, input_shape=(30, 9), return_sequences=True, kernel_regularizer=tf.keras.regularizers.l2(0.0001)))
+    model.add(LSTM(64, kernel_regularizer=tf.keras.regularizers.l2(0.0001)))
     return model
 
 
