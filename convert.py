@@ -53,7 +53,7 @@ if __name__ == "__main__":
 
     model.summary()
 
-    convert_to_tflite_model(model, 'rope_model_hq.tflite', conversion_mode="hybrid_quantization")
+    convert_to_tflite_model(model, 'postion_model_hq.tflite', conversion_mode="hybrid_quantization")
 
     # converter = tf.lite.TFLiteConverter.from_keras_model(model)
     # tflite_model = converter.convert()
