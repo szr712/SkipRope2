@@ -4,12 +4,12 @@ import os
 
 modelName = "初学者位置稳定性_Dense1_训练部分包含70测试_扩容_不固定_0.941__20210428_05_48_37.h5"
 modelPath = "./model"
-className = "PostionStablity"
+className = "RopeSwinging"
 
 
 def rename_input(model):
     for layer, i in zip(model.layers, range(1, 71)):
-        layer._name = "my_input_"+str(i)
+        layer._name = "my_input_" + str(i)
 
 
 def convert_to_tflite_model(model, save_file_path, conversion_mode="normal"):
@@ -53,7 +53,7 @@ if __name__ == "__main__":
 
     model.summary()
 
-    convert_to_tflite_model(model,'postion_model_fp16_rename.tflite',conversion_mode="fp16_quantization")
+    convert_to_tflite_model(model, 'rope_model_fp16.tflite', conversion_mode="fp16_quantization")
 
     # converter = tf.lite.TFLiteConverter.from_keras_model(model)
     # tflite_model = converter.convert()
