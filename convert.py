@@ -2,7 +2,7 @@ import tensorflow as tf
 from tensorflow.python.keras.models import load_model, Model
 import os
 
-modelName = "初学者位置稳定性_Dense1_训练部分包含70测试_扩容_不固定_0.941__20210428_05_48_37.h5"
+modelName = "初学者动作标准度_Dense1_训练包含70测试_扩容_不固定_0.898__20210428_08_33_22.h5"
 modelPath = "./model"
 className = "RopeSwinging"
 
