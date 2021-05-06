@@ -116,7 +116,7 @@ def process_label(score):
     return score
 
 
-def load_file(filepath):
+def load_file(filepath, isBeginner=True):
     """
 
     加载数据文件
@@ -136,7 +136,10 @@ def load_file(filepath):
     data = dataframe[colList].values
     data = data.astype(np.float64)
     data[:, 0:6] = data[:, 0:6] / 32768.0  # 对前6列数据归一化
-    data[:, 6:9] = data[:, 6:9] / 180.0  # 对欧拉角归一化
+    if isBeginner:
+        data[:, 6:9] = data[:, 6:9] / 18000.0  # 对欧拉角归一化
+    else:
+        data[:, 6:9] = data[:, 6:9] / 180.0  # 对欧拉角归一化
     return data
 
 
@@ -233,7 +236,7 @@ def load_dataset2(dirname, classname, scores=[1, 3, 5]):
     return X_train, X_test, y_train, y_test, class_weights
 
 
-def load_dataset_beginner(dirname, classname, pklPath="./data/pkl", augment=False,times=200):
+def load_dataset_beginner(dirname, classname, pklPath="./data/pkl", augment=False, times=200):
     X_train = [[] for _ in range(70)]
     y_train = []
     y2 = []
@@ -385,7 +388,8 @@ def load_dataset_beginner_reg(dirname, classname, pklPath="./data/pkl"):
 
 if __name__ == '__main__':
     # X_train, X_test, y_train, y_test, class_weight = load_dataset2("./data", "shouwan")
-    X_train, X_test, y_train, y_test, class_weights,_ = load_dataset_beginner("./data", "PostionStablity",augment=True)
+    X_train, X_test, y_train, y_test, class_weights, _ = load_dataset_beginner("./data", "PostionStablity",
+                                                                               augment=True)
     # print(X_train.shape)
     # print(X_test.shape)
     print(len(X_train))
