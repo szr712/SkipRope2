@@ -137,7 +137,7 @@ def load_file(filepath, isBeginner=True):
     data = data.astype(np.float64)
     data[:, 0:6] = data[:, 0:6] / 32768.0  # 对前6列数据归一化
     if isBeginner:
-        data[:, 6:9] = data[:, 6:9] / 18000.0  # 对欧拉角归一化
+        data[:, 6:9] = data[:, 6:9] / 32768.0  # 对欧拉角归一化
     else:
         data[:, 6:9] = data[:, 6:9] / 180.0  # 对欧拉角归一化
     return data
@@ -163,7 +163,7 @@ def load_dataset(dirname, classname, scores=[1, 3, 5]):
 
         for file in fileList:
             # print(file)
-            data = load_file(os.path.join(dirname, classname, str(score), file))
+            data = load_file(os.path.join(dirname, classname, str(score), file), isBeginner=False)
             circleList = to_circleList(data.copy())
             for a, circle in enumerate(circleList):
                 circleList[a] = padding(circle)
@@ -204,7 +204,7 @@ def load_dataset2(dirname, classname, scores=[1, 3, 5]):
 
     for file in fileList:
         # print(file)
-        data = load_file(os.path.join(dirname, classname, "train", file))
+        data = load_file(os.path.join(dirname, classname, "train", file), isBeginner=False)
         data = data[:, 0:9].copy()  # 取前9列
         X_train.append(padding(data))
         y_train.append([encoded[scores.index(int(file.split("_")[0]))]])
@@ -225,7 +225,7 @@ def load_dataset2(dirname, classname, scores=[1, 3, 5]):
     fileList = os.listdir(os.path.join(dirname, classname, "test"))
 
     for file in fileList:
-        data = load_file(os.path.join(dirname, classname, "test", file))
+        data = load_file(os.path.join(dirname, classname, "test", file), isBeginner=False)
         data = data[:, 0:9].copy()
         X_test.append(padding(data))
         y_test.append([encoded[scores.index(int(file.split("_")[0]))]])
