@@ -173,7 +173,7 @@ if __name__ == "__main__":
     print(modelName)
     X_train, X_test, y_train, y_test, class_weights, _ = load_dataset_beginner(dataSet, className, augment=True,
                                                                                times=150)
-    model = rope_model()
+    model = postion_model()
     model.summary()
     # model = postion_model()
     compile_model(model)
