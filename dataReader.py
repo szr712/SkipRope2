@@ -136,10 +136,11 @@ def load_file(filepath, isBeginner=True):
     data = dataframe[colList].values
     data = data.astype(np.float64)
     data[:, 0:6] = data[:, 0:6] / 32768.0  # 对前6列数据归一化
-    if isBeginner:
-        data[:, 6:9] = data[:, 6:9] / 32768.0  # 对欧拉角归一化
-    else:
-        data[:, 6:9] = data[:, 6:9] / 180.0  # 对欧拉角归一化
+    # if isBeginner:
+    #     data[:, 6:9] = data[:, 6:9] / 32768.0  # 对欧拉角归一化
+    # else:
+    #     data[:, 6:9] = data[:, 6:9] / 180.0  # 对欧拉角归一化
+    data[:, 6:9] = data[:, 6:9] / 180.0
     return data
 
 
