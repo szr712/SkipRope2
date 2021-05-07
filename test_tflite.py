@@ -5,7 +5,7 @@ from sklearn.metrics import classification_report
 
 from dataReader import load_dataset_beginner
 
-modelName = "postion_model_fp16_rename.tflite"
+modelName = "postion_model_hq.tflite"
 modelPath = "./model"
 className = "PostionStablity"
 
@@ -14,7 +14,8 @@ size = X_test[0].shape[0]
 
 y_pred = []
 
-interpreter = tf.lite.Interpreter(model_path=os.path.join(modelPath, className, modelName))
+# interpreter = tf.lite.Interpreter(model_path=os.path.join(modelPath, className, modelName))
+interpreter = tf.lite.Interpreter(model_path=modelName)
 interpreter.allocate_tensors()
 
 input_details = interpreter.get_input_details()

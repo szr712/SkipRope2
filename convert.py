@@ -2,7 +2,7 @@ import tensorflow as tf
 from tensorflow.python.keras.models import load_model, Model
 import os
 
-modelName = "初学者位置稳定性_Dense1_训练部分包含70测试_扩容_不固定_0.941__20210428_05_48_37.h5"
+modelName = "初学者位置稳定性_Dense1_有扩容_有finetuning_更改归一化_0.882__20210507_03_43_01.h5"
 modelPath = "./model"
 className = "PostionStablity"
 
