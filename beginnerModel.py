@@ -15,7 +15,7 @@ from tensorflow.python.keras.utils.vis_utils import plot_model
 from dataReader import padding, load_dataset_beginner, load_dataset_beginner_reg
 from datetime import datetime
 
-modelName = "初学者动作标准度_Dense1_有扩容_无finetuning_"
+modelName = "初学者动作标准度_Dense1_不扩容_无finetuning_"
 
 # os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 epochs, batch_size = 200, 256
@@ -60,6 +60,7 @@ def shoubi_model():
     model = Sequential(name="shoubi_model")
     model.add(LSTM(64, input_shape=(30, 9), return_sequences=True, kernel_regularizer=tf.keras.regularizers.l2(0.0001)))
     model.add(LSTM(64, kernel_regularizer=tf.keras.regularizers.l2(0.0001)))
+    model.trainable=False
     return model
 
 
@@ -69,6 +70,7 @@ def shouwan_model():
     model = Sequential(name="shouwan_model")
     model.add(LSTM(64, input_shape=(30, 9), return_sequences=True, kernel_regularizer=tf.keras.regularizers.l2(0.0001)))
     model.add(LSTM(64, kernel_regularizer=tf.keras.regularizers.l2(0.0001)))
+    model.trainable=False
     return model
 
 
