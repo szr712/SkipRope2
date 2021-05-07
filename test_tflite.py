@@ -5,9 +5,9 @@ from sklearn.metrics import classification_report
 
 from dataReader import load_dataset_beginner
 
-modelName = "postion_model_hq.tflite"
+modelName = "rope_model_hq.tflite"
 modelPath = "./model"
-className = "PostionStablity"
+className = "RopeSwinging"
 
 X_train, X_test, y_train, y_test, _, list = load_dataset_beginner("./data", className)
 size = X_test[0].shape[0]

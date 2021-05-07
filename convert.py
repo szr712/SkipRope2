@@ -2,9 +2,9 @@ import tensorflow as tf
 from tensorflow.python.keras.models import load_model, Model
 import os
 
-modelName = "初学者位置稳定性_Dense1_有扩容_有finetuning_更改归一化_0.882__20210507_03_43_01.h5"
+modelName = "初学者动作标准度_Dense1_有扩容_有finetuning_更改归一化_0.837__20210507_07_10_52.h5"
 modelPath = "./model"
-className = "PostionStablity"
+className = "RopeSwinging"
 
 
 def rename_input(model):
@@ -53,7 +53,7 @@ if __name__ == "__main__":
 
     model.summary()
 
-    convert_to_tflite_model(model, 'postion_model_hq.tflite', conversion_mode="hybrid_quantization")
+    convert_to_tflite_model(model, 'rope_model_hq.tflite', conversion_mode="hybrid_quantization")
 
     # converter = tf.lite.TFLiteConverter.from_keras_model(model)
     # tflite_model = converter.convert()
