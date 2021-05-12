@@ -15,7 +15,7 @@ from tensorflow.python.keras.utils.vis_utils import plot_model
 from dataReader import padding, load_dataset_beginner, load_dataset_beginner_reg
 from datetime import datetime
 
-modelName = "初学者动作标准度_Dense1_修改结构_有扩容_有finetuning_"
+modelName = "初学者动作标准度_Dense_无扩容_无finetuning_"
 
 # os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 epochs, batch_size = 200, 256
@@ -57,19 +57,19 @@ def zuoyou_model():
 def shoubi_model():
     model = load_model(os.path.join(modelPath, shoubi))
     model = Model(inputs=model.input, outputs=model.layers[1].output, name="shoubi_model")
-    # model = Sequential(name="shoubi_model")
-    # model.add(LSTM(64, input_shape=(30, 9), return_sequences=True, kernel_regularizer=tf.keras.regularizers.l2(0.0001)))
-    # model.add(LSTM(64, kernel_regularizer=tf.keras.regularizers.l2(0.0001)))
+    model = Sequential(name="shoubi_model")
+    model.add(LSTM(64, input_shape=(30, 9), return_sequences=True, kernel_regularizer=tf.keras.regularizers.l2(0.0001)))
+    model.add(LSTM(64, kernel_regularizer=tf.keras.regularizers.l2(0.0001)))
     # model.trainable = False
     return model
 
 
 def shouwan_model():
-    model = load_model(os.path.join(modelPath, shouwan))
-    model = Model(inputs=model.input, outputs=model.layers[1].output, name="shouwan_model")
-    # model = Sequential(name="shouwan_model")
-    # model.add(LSTM(64, input_shape=(30, 9), return_sequences=True, kernel_regularizer=tf.keras.regularizers.l2(0.0001)))
-    # model.add(LSTM(64, kernel_regularizer=tf.keras.regularizers.l2(0.0001)))
+    # model = load_model(os.path.join(modelPath, shouwan))
+    # model = Model(inputs=model.input, outputs=model.layers[1].output, name="shouwan_model")
+    model = Sequential(name="shouwan_model")
+    model.add(LSTM(64, input_shape=(30, 9), return_sequences=True, kernel_regularizer=tf.keras.regularizers.l2(0.0001)))
+    model.add(LSTM(64, kernel_regularizer=tf.keras.regularizers.l2(0.0001)))
     # model.trainable = False
     return model
 
@@ -131,17 +131,17 @@ def rope_model():
 
     for input in inputs:
         x1 = feature1(input)
-        # x2 = feature2(input)
-        # out = concatenate([x1,x2])
-        # outs.append(out)
-        outs.append(x1)
-
-    for input in inputs:
-        # x1 = feature1(input)
         x2 = feature2(input)
-        # out = concatenate(x1)
-        outs.append(x2)
-        # outs.append(x2)
+        out = concatenate([x1, x2])
+        outs.append(out)
+        # outs.append(x1)
+
+    # for input in inputs:
+    #     # x1 = feature1(input)
+    #     x2 = feature2(input)
+    #     # out = concatenate(x1)
+    #     outs.append(x2)
+    #     # outs.append(x2)
 
     print("outs complicated")
 
@@ -182,7 +182,7 @@ def train_model(model, trainX, trainy, testX, testy, class_weights):
 
 if __name__ == "__main__":
     print(modelName)
-    X_train, X_test, y_train, y_test, class_weights, _ = load_dataset_beginner(dataSet, className,augment=True,times=150)
+    X_train, X_test, y_train, y_test, class_weights, _ = load_dataset_beginner(dataSet, className)
     model = rope_model()
     model.summary()
     # model = postion_model()
