@@ -60,7 +60,7 @@ def shoubi_model():
     # model = Sequential(name="shoubi_model")
     # model.add(LSTM(64, input_shape=(30, 9), return_sequences=True, kernel_regularizer=tf.keras.regularizers.l2(0.0001)))
     # model.add(LSTM(64, kernel_regularizer=tf.keras.regularizers.l2(0.0001)))
-    model.trainable=False
+    # model.trainable = False
     return model
 
 
@@ -70,7 +70,7 @@ def shouwan_model():
     # model = Sequential(name="shouwan_model")
     # model.add(LSTM(64, input_shape=(30, 9), return_sequences=True, kernel_regularizer=tf.keras.regularizers.l2(0.0001)))
     # model.add(LSTM(64, kernel_regularizer=tf.keras.regularizers.l2(0.0001)))
-    model.trainable=False
+    # model.trainable = False
     return model
 
 
@@ -131,8 +131,9 @@ def rope_model():
 
     for input in inputs:
         x1 = feature1(input)
-        x2 = feature2(input)
-        # out = concatenate(x1)
+        # x2 = feature2(input)
+        # out = concatenate([x1,x2])
+        # outs.append(out)
         outs.append(x1)
 
     for input in inputs:
@@ -140,7 +141,7 @@ def rope_model():
         x2 = feature2(input)
         # out = concatenate(x1)
         outs.append(x2)
-        outs.append(x2)
+        # outs.append(x2)
 
     print("outs complicated")
 
